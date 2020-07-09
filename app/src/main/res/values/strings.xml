@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Jetpack News</string>
+
+    <string name="idle_text">"We will be loading your data soon"</string>
+    <string name="loading_text">"Let me get some news for you from"</string>
+    <string name="error_text">"Looks like something went wrong while getting news from"</string>
+    <string name="error_due_to">"Due to %1s"</string>
+    <string name="news_from">News from %1s</string>
+    <string name="dismiss">Dismiss</string>
+</resources>
