@@ -1,9 +1,9 @@
 package com.dhimandasgupta.myjetpacknews.viewmodel
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.dhimandasgupta.data.domain.NewsUseCase
 import com.dhimandasgupta.data.domain.Params
@@ -18,7 +18,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
-class NewsViewModel(
+class NewsViewModel @ViewModelInject constructor(
     private val useCase: NewsUseCase
 ) : ViewModel() {
     private val newsUiStateMutableLiveData = MutableLiveData<NewsUiState>().also {
@@ -69,17 +69,4 @@ class NewsViewModel(
             }
         }
     }
-}
-
-@Suppress("UNCHECKED_CAST")
-class NewsViewModelFactory(
-    private val useCase: NewsUseCase
-) : ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(NewsViewModel::class.java)) {
-            return NewsViewModel(useCase) as T
-        }
-        throw IllegalAccessException("Please make sure that, you are passing tht correct parameters to create the ViewModel")
-    }
-
 }
