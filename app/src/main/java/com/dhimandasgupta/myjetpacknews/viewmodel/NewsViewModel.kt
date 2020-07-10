@@ -40,13 +40,6 @@ class NewsViewModel(
         val newSources = mapSource(query = source.title)
         val currentSource = newSources.first { s: Source -> s.selected }
 
-        newsUiStateMutableLiveData.postValue(
-            newsUiStateMutableLiveData.value?.copy(
-                currentSource = currentSource,
-                allSources = newSources
-            )
-        )
-
         currentJob?.cancel()
         currentJob = viewModelScope.launch {
             kotlin.runCatching {
