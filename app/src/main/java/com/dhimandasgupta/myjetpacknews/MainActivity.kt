@@ -1,24 +1,19 @@
 package com.dhimandasgupta.myjetpacknews
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.ui.core.setContent
-import com.dhimandasgupta.myjetpacknews.di.Generators
 import com.dhimandasgupta.myjetpacknews.ui.main.ThemedApp
 import com.dhimandasgupta.myjetpacknews.viewmodel.NewsViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private lateinit var newsViewModel: NewsViewModel
+    private val newsViewModel: NewsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val newsViewModelFactory = Generators.provideNewsViewModelFactory()
-        newsViewModel = ViewModelProvider(
-            viewModelStore,
-            newsViewModelFactory
-        ).get(NewsViewModel::class.java)
-
         setContent {
             ThemedApp(newsViewModel)
         }
