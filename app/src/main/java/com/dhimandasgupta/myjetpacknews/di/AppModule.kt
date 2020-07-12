@@ -3,12 +3,14 @@ package com.dhimandasgupta.myjetpacknews.di
 import com.dhimandasgupta.data.data.NewsRepositoryImpl
 import com.dhimandasgupta.data.data.NewsServiceImpl
 import com.dhimandasgupta.data.data.api.NewsApi
+import com.dhimandasgupta.data.data.api.NewsRequestHeaderInterceptor
 import com.dhimandasgupta.data.domain.NewsUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityRetainedComponent
 import dagger.hilt.android.components.ApplicationComponent
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Converter
 import retrofit2.Retrofit
@@ -16,16 +18,34 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Qualifier
 
 private const val BASE_NEWS_API_DOMAIN = "https://newsapi.org/v2/"
+private const val API_KEY = "Enter your api key"
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class BaseUrl
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class ApiKey
 
 @Module
 @InstallIn(ApplicationComponent::class)
 class AppModule {
     @BaseUrl
     @Provides
-    fun provideBaseUrl() = BASE_NEWS_API_DOMAIN
+    fun provideBaseUrl(): String = BASE_NEWS_API_DOMAIN
+
+    @ApiKey
+    @Provides
+    fun provideApiKey(): String = API_KEY
 
     @Provides
-    fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder().build()
+    fun provideHeaderInterceptor(@ApiKey apiKey: String): Interceptor = NewsRequestHeaderInterceptor(apiKey = apiKey)
+
+    @Provides
+    fun provideOkHttpClient(headerInterceptor: Interceptor): OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor(headerInterceptor)
+        .build()
 
     @Provides
     fun provideConverterFactory(): Converter.Factory = GsonConverterFactory.create()
@@ -45,15 +65,11 @@ class AppModule {
 @InstallIn(ActivityRetainedComponent::class)
 class ActivityModule {
     @Provides
-    fun provideNewsUseCase(newsApi: NewsApi): NewsUseCase = NewsUseCase(provideNewsRepository(newsApi))
-
-    @Provides
-    fun provideNewsRepository(newsApi: NewsApi): NewsRepositoryImpl = NewsRepositoryImpl(provideNewsService(newsApi))
-
-    @Provides
     fun provideNewsService(newsApi: NewsApi): NewsServiceImpl = NewsServiceImpl(newsApi)
-}
 
-@Qualifier
-@Retention(AnnotationRetention.RUNTIME)
-annotation class BaseUrl
+    @Provides
+    fun provideNewsRepository(newsService: NewsServiceImpl): NewsRepositoryImpl = NewsRepositoryImpl(newsService)
+
+    @Provides
+    fun provideNewsUseCase(newsRepository: NewsRepositoryImpl): NewsUseCase = NewsUseCase(newsRepository)
+}
