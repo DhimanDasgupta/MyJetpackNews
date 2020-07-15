@@ -32,14 +32,14 @@ fun errorDomainModel(sourceName: String, e: Exception) = NewsDomainModel(
 )
 
 private fun Article.isValidArticle(): Article? {
-    return if (source.name?.isNotBlank() == true
-        && author?.isNotBlank() == true
-        && title?.isNotBlank() == true
-        && description?.isNotBlank() == true
-        && url?.isNotBlank() == true
-        && urlToImage?.isNotBlank() == true
-        && publishedAt?.isNotBlank() == true
-        && content?.isNotBlank() == true
+    return if (source.name?.isNotBlank() == true &&
+        author?.isNotBlank() == true &&
+        title?.isNotBlank() == true &&
+        description?.isNotBlank() == true &&
+        url?.isNotBlank() == true &&
+        urlToImage?.isNotBlank() == true &&
+        publishedAt?.isNotBlank() == true &&
+        content?.isNotBlank() == true
     )
         this
     else null

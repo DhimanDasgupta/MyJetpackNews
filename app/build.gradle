@@ -9,6 +9,7 @@ plugins {
 
 apply plugin: 'kotlin-kapt'
 apply plugin: 'dagger.hilt.android.plugin'
+apply from: "../ktlint.gradle"
 
 android {
     compileSdkVersion Versions.compileSdk

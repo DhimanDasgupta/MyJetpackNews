@@ -35,7 +35,6 @@ class NewsViewModel @ViewModelInject constructor(
 
     private var currentJob: Job? = null
 
-
     fun fetchNewsFromSource(source: Source) {
         val newSources = mapSource(query = source.title)
         val currentSource = newSources.first { s: Source -> s.selected }
@@ -64,7 +63,8 @@ class NewsViewModel @ViewModelInject constructor(
                     newsUiStateMutableLiveData.value?.copy(
                         uiModels = ErrorUIModel(Exception(throwable.localizedMessage), source = currentSource),
                         currentSource = currentSource,
-                        allSources = newSources)
+                        allSources = newSources
+                    )
                 )
             }
         }

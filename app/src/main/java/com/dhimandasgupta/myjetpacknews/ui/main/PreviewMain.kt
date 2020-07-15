@@ -21,7 +21,8 @@ val previewArticles: List<ArticleUIModel> = listOf(
         urlToImage = "https://imgur.com/oKIqpfl",
         content = "Some random content",
         description = "Some random description",
-        publishedAt = "Some time"),
+        publishedAt = "Some time"
+    ),
     ArticleUIModel(
         sourceName = "Source Name",
         author = "Author name",
@@ -30,7 +31,8 @@ val previewArticles: List<ArticleUIModel> = listOf(
         urlToImage = "https://imgur.com/oKIqpfl",
         content = "Some random content",
         description = "Some random description",
-        publishedAt = "Some time"),
+        publishedAt = "Some time"
+    ),
     ArticleUIModel(
         sourceName = "Source Name",
         author = "Author name",
@@ -39,7 +41,8 @@ val previewArticles: List<ArticleUIModel> = listOf(
         urlToImage = "https://imgur.com/oKIqpfl",
         content = "Some random content",
         description = "Some random description",
-        publishedAt = "Some time"),
+        publishedAt = "Some time"
+    ),
     ArticleUIModel(
         sourceName = "Source Name",
         author = "Author name",
@@ -48,7 +51,8 @@ val previewArticles: List<ArticleUIModel> = listOf(
         urlToImage = "https://imgur.com/oKIqpfl",
         content = "Some random content",
         description = "Some random description",
-        publishedAt = "Some time"),
+        publishedAt = "Some time"
+    ),
     ArticleUIModel(
         sourceName = "Source Name",
         author = "Author name",
@@ -57,7 +61,8 @@ val previewArticles: List<ArticleUIModel> = listOf(
         urlToImage = "https://imgur.com/oKIqpfl",
         content = "Some random content",
         description = "Some random description",
-        publishedAt = "Some time"),
+        publishedAt = "Some time"
+    ),
     ArticleUIModel(
         sourceName = "Source Name",
         author = "Author name",
@@ -66,7 +71,8 @@ val previewArticles: List<ArticleUIModel> = listOf(
         urlToImage = "https://imgur.com/oKIqpfl",
         content = "Some random content",
         description = "Some random description",
-        publishedAt = "Some time"),
+        publishedAt = "Some time"
+    ),
     ArticleUIModel(
         sourceName = "Source Name",
         author = "Author name",
@@ -75,7 +81,8 @@ val previewArticles: List<ArticleUIModel> = listOf(
         urlToImage = "https://imgur.com/oKIqpfl",
         content = "Some random content",
         description = "Some random description",
-        publishedAt = "Some time"),
+        publishedAt = "Some time"
+    ),
     ArticleUIModel(
         sourceName = "Source Name",
         author = "Author name",
@@ -84,7 +91,8 @@ val previewArticles: List<ArticleUIModel> = listOf(
         urlToImage = "https://imgur.com/oKIqpfl",
         content = "Some random content",
         description = "Some random description",
-        publishedAt = "Some time")
+        publishedAt = "Some time"
+    )
 )
 
 val previewIdleUiModels = IdleUIModel

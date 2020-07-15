@@ -13,7 +13,7 @@ interface NewsApi {
     ): NetworkResponse
 }
 
-class NewsRequestHeaderInterceptor(private val apiKey: String): Interceptor {
+class NewsRequestHeaderInterceptor(private val apiKey: String) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         val requestWithHeaders = request.newBuilder()

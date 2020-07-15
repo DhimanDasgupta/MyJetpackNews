@@ -221,9 +221,7 @@ fun RenderArticle(article: ArticleUIModel) {
                             .preferredSize(4.dp)
                     )
                 }
-
             }
-
         }
     }
 }
@@ -249,7 +247,8 @@ fun RenderError(errorUIModel: ErrorUIModel) {
             )
             Spacer(modifier = Modifier.preferredHeight(8.dp))
             Text(
-                text = stringResource(id = R.string.error_due_to,
+                text = stringResource(
+                    id = R.string.error_due_to,
                     formatArgs = *arrayOf(errorUIModel.exception.localizedMessage)
                 ),
                 style = MaterialTheme.typography.h5,
@@ -279,10 +278,13 @@ fun NewsBottomAppBar(sources: List<Source>, onSourceSelected: (Source) -> Unit) 
 fun BottomAppBarItem(source: Source, onSourceSelected: (Source) -> Unit) {
     Column(
         modifier = Modifier.fillMaxHeight()
-            .padding(start = 8.dp, top = 0.dp, end = 8.dp, bottom = 0.dp).
-            clickable(enabled = true,
+            .padding(start = 8.dp, top = 0.dp, end = 8.dp, bottom = 0.dp)
+            .clickable(
+                enabled = true,
                 indication = RippleIndication(bounded = true),
-                onClick = { onSourceSelected.invoke(source) })) {
+                onClick = { onSourceSelected.invoke(source) }
+            )
+    ) {
         if (source.selected) {
             Box(
                 modifier = Modifier.width(32.dp).height(2.dp)
