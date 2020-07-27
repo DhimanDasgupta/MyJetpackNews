@@ -9,9 +9,9 @@ import androidx.ui.core.Modifier
 import androidx.ui.core.clip
 import androidx.ui.foundation.Box
 import androidx.ui.foundation.ContentGravity
-import androidx.ui.foundation.HorizontalScroller
+import androidx.ui.foundation.ScrollableColumn
+import androidx.ui.foundation.ScrollableRow
 import androidx.ui.foundation.Text
-import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.clickable
 import androidx.ui.foundation.shape.corner.CornerSize
 import androidx.ui.layout.Column
@@ -87,7 +87,7 @@ fun Content(newsViewModel: NewsViewModel) {
 fun NewsTopAppBar(source: Source) {
     TopAppBar {
         Text(
-            text = stringResource(id = R.string.news_from, formatArgs = *arrayOf(source.title)),
+            text = stringResource(id = R.string.news_from, formatArgs = arrayOf(source.title)),
             style = MaterialTheme.typography.h5,
             color = MaterialTheme.colors.onPrimary,
             textAlign = TextAlign.Right,
@@ -160,7 +160,7 @@ fun RenderLoading(source: Source) {
 
 @Composable
 fun RenderArticles(articles: List<ArticleUIModel>) {
-    VerticalScroller(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
+    ScrollableColumn(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
         articles.map {
             RenderArticle(article = it)
         }
@@ -249,7 +249,7 @@ fun RenderError(errorUIModel: ErrorUIModel) {
             Text(
                 text = stringResource(
                     id = R.string.error_due_to,
-                    formatArgs = *arrayOf(errorUIModel.exception.localizedMessage)
+                    formatArgs = arrayOf(errorUIModel.exception.localizedMessage)
                 ),
                 style = MaterialTheme.typography.h5,
                 color = MaterialTheme.colors.error,
@@ -263,7 +263,7 @@ fun RenderError(errorUIModel: ErrorUIModel) {
 @Composable
 fun NewsBottomAppBar(sources: List<Source>, onSourceSelected: (Source) -> Unit) {
     BottomAppBar(modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically)) {
-        HorizontalScroller(modifier = Modifier.fillMaxHeight()) {
+        ScrollableRow(modifier = Modifier.fillMaxHeight()) {
             sources.map { source ->
                 BottomAppBarItem(
                     source = source,
