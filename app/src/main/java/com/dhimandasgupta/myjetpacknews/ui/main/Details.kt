@@ -1,16 +1,15 @@
 package com.dhimandasgupta.myjetpacknews.ui.main
 
-import androidx.compose.Composable
-import androidx.ui.core.Alignment
-import androidx.ui.core.Modifier
-import androidx.ui.foundation.Text
-import androidx.ui.layout.Column
-import androidx.ui.layout.fillMaxHeight
-import androidx.ui.layout.fillMaxWidth
-import androidx.ui.layout.wrapContentSize
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.Scaffold
-import androidx.ui.text.style.TextAlign
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import com.dhimandasgupta.data.presentaion.ArticleUIModel
 
 @Composable
@@ -22,8 +21,7 @@ fun Details(articleUIModel: ArticleUIModel) {
                 style = MaterialTheme.typography.h5,
                 color = MaterialTheme.colors.onPrimary,
                 textAlign = TextAlign.Right,
-                modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                    .wrapContentSize(align = Alignment.Center)
+                modifier = Modifier.fillMaxSize().wrapContentSize(align = Alignment.Center)
             )
         }
     }

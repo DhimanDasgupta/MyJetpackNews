@@ -1,47 +1,43 @@
 package com.dhimandasgupta.myjetpacknews.ui.main
 
-import androidx.compose.Composable
-import androidx.compose.getValue
-import androidx.compose.setValue
-import androidx.compose.state
-import androidx.ui.core.Alignment
-import androidx.ui.core.Modifier
-import androidx.ui.core.clip
-import androidx.ui.foundation.Box
-import androidx.ui.foundation.ContentGravity
-import androidx.ui.foundation.ScrollableColumn
-import androidx.ui.foundation.ScrollableRow
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.clickable
-import androidx.ui.foundation.shape.corner.CornerSize
-import androidx.ui.layout.Column
-import androidx.ui.layout.ColumnScope.weight
-import androidx.ui.layout.Row
-import androidx.ui.layout.Spacer
-import androidx.ui.layout.fillMaxHeight
-import androidx.ui.layout.fillMaxSize
-import androidx.ui.layout.fillMaxWidth
-import androidx.ui.layout.height
-import androidx.ui.layout.padding
-import androidx.ui.layout.preferredHeight
-import androidx.ui.layout.preferredSize
-import androidx.ui.layout.width
-import androidx.ui.layout.wrapContentHeight
-import androidx.ui.layout.wrapContentSize
-import androidx.ui.layout.wrapContentWidth
-import androidx.ui.livedata.observeAsState
-import androidx.ui.material.AlertDialog
-import androidx.ui.material.BottomAppBar
-import androidx.ui.material.Card
-import androidx.ui.material.CircularProgressIndicator
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.Scaffold
-import androidx.ui.material.TextButton
-import androidx.ui.material.TopAppBar
-import androidx.ui.material.ripple.RippleIndication
-import androidx.ui.res.stringResource
-import androidx.ui.text.style.TextAlign
-import androidx.ui.unit.dp
+import androidx.compose.foundation.Box
+import androidx.compose.foundation.ContentGravity
+import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.foundation.ScrollableRow
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope.weight
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.BottomAppBar
+import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.TextButton
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.ripple.RippleIndication
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.dhimandasgupta.data.presentaion.ArticleUIModel
 import com.dhimandasgupta.data.presentaion.ErrorUIModel
 import com.dhimandasgupta.data.presentaion.IdleUIModel
@@ -54,7 +50,6 @@ import com.dhimandasgupta.myjetpacknews.R
 import com.dhimandasgupta.myjetpacknews.ui.common.MyNewsTheme
 import com.dhimandasgupta.myjetpacknews.ui.common.shapes
 import com.dhimandasgupta.myjetpacknews.viewmodel.NewsViewModel
-import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
 @Composable
 fun ThemedApp(newsViewModel: NewsViewModel) {
@@ -91,8 +86,7 @@ fun NewsTopAppBar(source: Source) {
             style = MaterialTheme.typography.h5,
             color = MaterialTheme.colors.onPrimary,
             textAlign = TextAlign.Right,
-            modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                .wrapContentSize(align = Alignment.Center)
+            modifier = Modifier.fillMaxSize().wrapContentSize(align = Alignment.Center)
         )
     }
 }
@@ -169,9 +163,9 @@ fun RenderArticles(articles: List<ArticleUIModel>) {
 
 @Composable
 fun RenderArticle(article: ArticleUIModel) {
-    var showDialog by state { false }
-    if (showDialog) {
-        ShowArticleInADialog(article = article) { showDialog = false }
+    var showDialog = mutableStateOf(false)
+    if (showDialog.value) {
+        ShowArticleInADialog(article = article) { showDialog.value = false }
     }
 
     Spacer(modifier = Modifier.wrapContentWidth().wrapContentHeight().preferredSize(8.dp))
@@ -179,8 +173,7 @@ fun RenderArticle(article: ArticleUIModel) {
         shape = shapes.medium,
         elevation = 8.dp,
         color = MaterialTheme.colors.surface,
-        modifier = Modifier.fillMaxWidth()
-            .clickable(enabled = true, indication = RippleIndication(bounded = true), onClick = { showDialog = true })
+        modifier = Modifier.fillMaxWidth().clickable(enabled = true, indication = RippleIndication(bounded = true), onClick = { showDialog.value = true })
     ) {
         Column {
             Spacer(
@@ -191,14 +184,10 @@ fun RenderArticle(article: ArticleUIModel) {
                     modifier = Modifier.wrapContentWidth().wrapContentHeight()
                         .preferredSize(8.dp)
                 )
-                CoilImageWithCrossfade(
+                /*CoilImageWithCrossfade(
                     data = article.urlToImage,
-                    modifier = Modifier.preferredSize(100.dp).width(100.dp).height(100.dp).clip(
-                        shape = shapes.medium.copy(
-                            CornerSize(16.dp)
-                        )
-                    )
-                )
+                    modifier = Modifier.preferredSize(100.dp)
+                )*/
                 Column(modifier = Modifier.padding(8.dp)) {
                     Text(
                         text = article.title,

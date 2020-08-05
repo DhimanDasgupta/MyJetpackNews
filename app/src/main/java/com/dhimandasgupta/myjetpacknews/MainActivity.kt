@@ -3,7 +3,7 @@ package com.dhimandasgupta.myjetpacknews
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.ui.core.setContent
+import androidx.compose.ui.platform.setContent
 import com.dhimandasgupta.myjetpacknews.ui.main.ThemedApp
 import com.dhimandasgupta.myjetpacknews.viewmodel.NewsViewModel
 import dagger.hilt.android.AndroidEntryPoint
