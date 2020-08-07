@@ -81,7 +81,7 @@ object Deps {
         }
 
         object Accompanist {
-            private const val version = "0.1.7"
+            private const val version = "0.1.8"
 
             const val accompanistCoil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
             const val accompanistMdc = "dev.chrisbanes.accompanist:accompanist-mdc-theme:$version"

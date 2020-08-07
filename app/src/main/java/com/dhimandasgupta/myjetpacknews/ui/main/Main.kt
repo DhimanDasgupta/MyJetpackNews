@@ -50,6 +50,7 @@ import com.dhimandasgupta.myjetpacknews.R
 import com.dhimandasgupta.myjetpacknews.ui.common.MyNewsTheme
 import com.dhimandasgupta.myjetpacknews.ui.common.shapes
 import com.dhimandasgupta.myjetpacknews.viewmodel.NewsViewModel
+import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
 @Composable
 fun ThemedApp(newsViewModel: NewsViewModel) {
@@ -163,7 +164,7 @@ fun RenderArticles(articles: List<ArticleUIModel>) {
 
 @Composable
 fun RenderArticle(article: ArticleUIModel) {
-    var showDialog = mutableStateOf(false)
+    val showDialog = mutableStateOf(false)
     if (showDialog.value) {
         ShowArticleInADialog(article = article) { showDialog.value = false }
     }
@@ -184,10 +185,10 @@ fun RenderArticle(article: ArticleUIModel) {
                     modifier = Modifier.wrapContentWidth().wrapContentHeight()
                         .preferredSize(8.dp)
                 )
-                /*CoilImageWithCrossfade(
+                CoilImageWithCrossfade(
                     data = article.urlToImage,
                     modifier = Modifier.preferredSize(100.dp)
-                )*/
+                )
                 Column(modifier = Modifier.padding(8.dp)) {
                     Text(
                         text = article.title,
