@@ -18,7 +18,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Qualifier
 
 private const val BASE_NEWS_API_DOMAIN = "https://newsapi.org/v2/"
-private const val API_KEY = "Enter your api key"
+private const val API_KEY = "8aed68a4448b4c50b1c72a0fb83be86a"
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)

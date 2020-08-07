@@ -1,4 +1,4 @@
-package com.dhimandasgupta.myjetpacknews.ui.main
+package com.dhimandasgupta.myjetpacknews.ui.screens
 
 import com.dhimandasgupta.data.presentaion.ArticleUIModel
 import com.dhimandasgupta.data.presentaion.ArticlesUIModel

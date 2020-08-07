@@ -18,7 +18,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
-class NewsViewModel @ViewModelInject constructor(
+class SingleSourceViewModel @ViewModelInject constructor(
     private val useCase: NewsUseCase
 ) : ViewModel() {
     private val newsUiStateMutableLiveData = MutableLiveData<NewsUiState>().also {

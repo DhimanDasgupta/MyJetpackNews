@@ -50,7 +50,7 @@ object Deps {
     }
 
     object HiltAndroid {
-        private const val version = "1.0.0-alpha01"
+        private const val version = "1.0.0-alpha02"
 
         const val kapt = "androidx.hilt:hilt-compiler:$version"
         const val viewModel = "androidx.hilt:hilt-lifecycle-viewmodel:$version"

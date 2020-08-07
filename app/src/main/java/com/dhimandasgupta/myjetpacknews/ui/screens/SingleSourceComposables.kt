@@ -1,4 +1,4 @@
-package com.dhimandasgupta.myjetpacknews.ui.main
+package com.dhimandasgupta.myjetpacknews.ui.screens
 
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.ContentGravity
@@ -49,33 +49,33 @@ import com.dhimandasgupta.data.presentaion.initialNewsUiState
 import com.dhimandasgupta.myjetpacknews.R
 import com.dhimandasgupta.myjetpacknews.ui.common.MyNewsTheme
 import com.dhimandasgupta.myjetpacknews.ui.common.shapes
-import com.dhimandasgupta.myjetpacknews.viewmodel.NewsViewModel
+import com.dhimandasgupta.myjetpacknews.viewmodel.SingleSourceViewModel
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
 @Composable
-fun ThemedApp(newsViewModel: NewsViewModel) {
+fun SingleSourceScreen(singleSourceViewModel: SingleSourceViewModel) {
     MyNewsTheme {
-        App(newsViewModel = newsViewModel)
+        ThemedSingleSourceScreen(singleSourceViewModel = singleSourceViewModel)
     }
 }
 
 @Composable
-fun App(newsViewModel: NewsViewModel) {
+fun ThemedSingleSourceScreen(singleSourceViewModel: SingleSourceViewModel) {
     Scaffold {
         Column {
-            Content(newsViewModel = newsViewModel)
+            Content(singleSourceViewModel = singleSourceViewModel)
         }
     }
 }
 
 @Composable
-fun Content(newsViewModel: NewsViewModel) {
-    val newsUiState = newsViewModel.newsUiState.observeAsState(initial = initialNewsUiState)
+fun Content(singleSourceViewModel: SingleSourceViewModel) {
+    val newsUiState = singleSourceViewModel.newsUiState.observeAsState(initial = initialNewsUiState)
 
     NewsTopAppBar(source = newsUiState.value.currentSource)
     NewsBody(uiModels = newsUiState.value.uiModels)
     NewsBottomAppBar(sources = newsUiState.value.allSources) { source ->
-        if (!source.selected) newsViewModel.fetchNewsFromSource(source)
+        if (!source.selected) singleSourceViewModel.fetchNewsFromSource(source)
     }
 }
 

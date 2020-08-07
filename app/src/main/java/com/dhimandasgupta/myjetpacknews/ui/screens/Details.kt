@@ -1,4 +1,4 @@
-package com.dhimandasgupta.myjetpacknews.ui.main
+package com.dhimandasgupta.myjetpacknews.ui.screens
 
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Column

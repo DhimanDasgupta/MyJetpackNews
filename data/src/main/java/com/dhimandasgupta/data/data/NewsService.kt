@@ -14,7 +14,7 @@ interface NewsService {
 
 class NewsServiceImpl(private val newsApi: NewsApi) : NewsService {
     override suspend fun getEverythingByQuery(query: String) = try {
-        delay(2000)
+        delay(500)
         newsApi.getEverythingByQuery(query).toDomainModel()
     } catch (e: Exception) {
         errorDomainModel(query, e)
