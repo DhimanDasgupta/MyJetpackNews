@@ -22,21 +22,26 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.AlertDialog
+import androidx.compose.material.AlertDialogButtonLayout.Stacked
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.MaterialTheme.colors
+import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.Scaffold
 import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.ripple.RippleIndication
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.state
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextAlign.Center
 import androidx.compose.ui.unit.dp
 import com.dhimandasgupta.data.presentaion.ArticleUIModel
 import com.dhimandasgupta.data.presentaion.ErrorUIModel
@@ -61,22 +66,17 @@ fun SingleSourceScreen(singleSourceViewModel: SingleSourceViewModel) {
 
 @Composable
 fun ThemedSingleSourceScreen(singleSourceViewModel: SingleSourceViewModel) {
-    Scaffold {
-        Column {
-            Content(singleSourceViewModel = singleSourceViewModel)
-        }
-    }
-}
-
-@Composable
-fun Content(singleSourceViewModel: SingleSourceViewModel) {
     val newsUiState = singleSourceViewModel.newsUiState.observeAsState(initial = initialNewsUiState)
 
-    NewsTopAppBar(source = newsUiState.value.currentSource)
-    NewsBody(uiModels = newsUiState.value.uiModels)
-    NewsBottomAppBar(sources = newsUiState.value.allSources) { source ->
-        if (!source.selected) singleSourceViewModel.fetchNewsFromSource(source)
-    }
+    Scaffold(
+        topBar = { NewsTopAppBar(source = newsUiState.value.currentSource) },
+        bodyContent = { NewsBody(uiModels = newsUiState.value.uiModels) },
+        bottomBar = {
+            NewsBottomAppBar(sources = newsUiState.value.allSources) { source ->
+                if (!source.selected) singleSourceViewModel.fetchNewsFromSource(source)
+            }
+        }
+    )
 }
 
 @Composable
@@ -84,8 +84,8 @@ fun NewsTopAppBar(source: Source) {
     TopAppBar {
         Text(
             text = stringResource(id = R.string.news_from, formatArgs = arrayOf(source.title)),
-            style = MaterialTheme.typography.h5,
-            color = MaterialTheme.colors.onPrimary,
+            style = typography.h5,
+            color = colors.onPrimary,
             textAlign = TextAlign.Right,
             modifier = Modifier.fillMaxSize().wrapContentSize(align = Alignment.Center)
         )
@@ -95,8 +95,8 @@ fun NewsTopAppBar(source: Source) {
 @Composable
 fun NewsBody(uiModels: UIModels) {
     Box(
-        Modifier.weight(weight = 1.0f, fill = true),
-        backgroundColor = MaterialTheme.colors.surface
+        Modifier.weight(1f, true),
+        backgroundColor = colors.surface
     ) {
         NewsContainer(uiModels = uiModels)
     }
@@ -116,12 +116,12 @@ fun NewsContainer(uiModels: UIModels) {
 fun RenderIdle() {
     Box(modifier = Modifier.fillMaxSize(), gravity = ContentGravity.Center) {
         Column {
-            CircularProgressIndicator(modifier = Modifier.gravity(Alignment.CenterHorizontally))
+            CircularProgressIndicator(modifier = Modifier.gravity(CenterHorizontally))
             Text(
                 text = stringResource(id = R.string.idle_text),
-                style = MaterialTheme.typography.h6,
-                color = MaterialTheme.colors.onSurface,
-                modifier = Modifier.wrapContentWidth(Alignment.CenterHorizontally)
+                style = typography.h6,
+                color = colors.onSurface,
+                modifier = Modifier.wrapContentWidth(CenterHorizontally)
             )
         }
     }
@@ -132,21 +132,21 @@ fun RenderLoading(source: Source) {
     Box(modifier = Modifier.fillMaxSize().padding(16.dp), gravity = ContentGravity.Center) {
         Column {
             CircularProgressIndicator(
-                modifier = Modifier.gravity(Alignment.CenterHorizontally),
-                color = MaterialTheme.colors.onSurface
+                modifier = Modifier.gravity(CenterHorizontally),
+                color = colors.onSurface
             )
             Text(
                 text = stringResource(id = R.string.loading_text),
-                style = MaterialTheme.typography.h6,
-                color = MaterialTheme.colors.onSurface,
-                textAlign = TextAlign.Center,
+                style = typography.h6,
+                color = colors.onSurface,
+                textAlign = Center,
                 modifier = Modifier.fillMaxWidth()
             )
             Text(
                 text = source.title,
-                style = MaterialTheme.typography.h3,
-                color = MaterialTheme.colors.onSurface,
-                textAlign = TextAlign.Center,
+                style = typography.h3,
+                color = colors.onSurface,
+                textAlign = Center,
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -155,16 +155,17 @@ fun RenderLoading(source: Source) {
 
 @Composable
 fun RenderArticles(articles: List<ArticleUIModel>) {
-    ScrollableColumn(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
+    ScrollableColumn(modifier = Modifier.weight(1f, true).padding(start = 16.dp, end = 16.dp)) {
         articles.map {
             RenderArticle(article = it)
         }
+        Spacer(modifier = Modifier.fillMaxWidth().height(64.dp))
     }
 }
 
 @Composable
 fun RenderArticle(article: ArticleUIModel) {
-    val showDialog = mutableStateOf(false)
+    val showDialog = state { false }
     if (showDialog.value) {
         ShowArticleInADialog(article = article) { showDialog.value = false }
     }
@@ -173,7 +174,7 @@ fun RenderArticle(article: ArticleUIModel) {
     Card(
         shape = shapes.medium,
         elevation = 8.dp,
-        color = MaterialTheme.colors.surface,
+        color = colors.surface,
         modifier = Modifier.fillMaxWidth().clickable(enabled = true, indication = RippleIndication(bounded = true), onClick = { showDialog.value = true })
     ) {
         Column {
@@ -192,8 +193,8 @@ fun RenderArticle(article: ArticleUIModel) {
                 Column(modifier = Modifier.padding(8.dp)) {
                     Text(
                         text = article.title,
-                        style = MaterialTheme.typography.h6,
-                        color = MaterialTheme.colors.onSurface,
+                        style = typography.h6,
+                        color = colors.onSurface,
                         modifier = Modifier.padding(bottom = 4.dp)
                     )
                     Spacer(
@@ -202,8 +203,8 @@ fun RenderArticle(article: ArticleUIModel) {
                     )
                     Text(
                         text = article.description,
-                        style = MaterialTheme.typography.body1,
-                        color = MaterialTheme.colors.onSurface,
+                        style = typography.body1,
+                        color = colors.onSurface,
                         modifier = Modifier.padding(top = 4.dp)
                     )
                     Spacer(
@@ -222,18 +223,18 @@ fun RenderError(errorUIModel: ErrorUIModel) {
         Column {
             Text(
                 text = stringResource(id = R.string.error_text),
-                style = MaterialTheme.typography.body1,
-                color = MaterialTheme.colors.error,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth().gravity(align = Alignment.CenterHorizontally)
+                style = typography.body1,
+                color = colors.error,
+                textAlign = Center,
+                modifier = Modifier.fillMaxWidth().gravity(align = CenterHorizontally)
             )
             Spacer(modifier = Modifier.preferredHeight(4.dp))
             Text(
                 text = errorUIModel.source.title,
-                style = MaterialTheme.typography.h3,
-                color = MaterialTheme.colors.error,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth().gravity(align = Alignment.CenterHorizontally)
+                style = typography.h3,
+                color = colors.error,
+                textAlign = Center,
+                modifier = Modifier.fillMaxWidth().gravity(align = CenterHorizontally)
             )
             Spacer(modifier = Modifier.preferredHeight(8.dp))
             Text(
@@ -241,10 +242,10 @@ fun RenderError(errorUIModel: ErrorUIModel) {
                     id = R.string.error_due_to,
                     formatArgs = arrayOf(errorUIModel.exception.localizedMessage)
                 ),
-                style = MaterialTheme.typography.h5,
-                color = MaterialTheme.colors.error,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth().gravity(align = Alignment.CenterHorizontally)
+                style = typography.h5,
+                color = colors.error,
+                textAlign = Center,
+                modifier = Modifier.fillMaxWidth().gravity(align = CenterHorizontally)
             )
         }
     }
@@ -252,7 +253,7 @@ fun RenderError(errorUIModel: ErrorUIModel) {
 
 @Composable
 fun NewsBottomAppBar(sources: List<Source>, onSourceSelected: (Source) -> Unit) {
-    BottomAppBar(modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically)) {
+    BottomAppBar(modifier = Modifier.wrapContentHeight(align = CenterVertically)) {
         ScrollableRow(modifier = Modifier.fillMaxHeight()) {
             sources.map { source ->
                 BottomAppBarItem(
@@ -278,25 +279,25 @@ fun BottomAppBarItem(source: Source, onSourceSelected: (Source) -> Unit) {
         if (source.selected) {
             Box(
                 modifier = Modifier.width(32.dp).height(2.dp)
-                    .gravity(align = Alignment.CenterHorizontally),
+                    .gravity(align = CenterHorizontally),
                 shape = shapes.medium,
-                backgroundColor = MaterialTheme.colors.onPrimary
+                backgroundColor = colors.onPrimary
             )
         }
         Text(
             text = source.title,
-            style = if (source.selected) MaterialTheme.typography.h5 else MaterialTheme.typography.h6,
-            color = MaterialTheme.colors.onPrimary,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically)
+            style = if (source.selected) typography.h5 else typography.h6,
+            color = colors.onPrimary,
+            textAlign = Center,
+            modifier = Modifier.wrapContentHeight(align = CenterVertically)
                 .weight(1f, true)
         )
         if (source.selected) {
             Box(
                 modifier = Modifier.width(64.dp).height(2.dp)
-                    .gravity(align = Alignment.CenterHorizontally),
+                    .gravity(align = CenterHorizontally),
                 shape = shapes.medium,
-                backgroundColor = MaterialTheme.colors.onPrimary
+                backgroundColor = colors.onPrimary
             )
         }
     }
@@ -306,16 +307,36 @@ fun BottomAppBarItem(source: Source, onSourceSelected: (Source) -> Unit) {
 fun ShowArticleInADialog(article: ArticleUIModel, onDismiss: () -> Unit) {
     MyNewsTheme {
         AlertDialog(
+            buttonLayout = Stacked,
             onCloseRequest = onDismiss,
-            text = {
+            title = {
                 Text(
                     text = article.title,
-                    style = MaterialTheme.typography.body2
+                    style = typography.body2,
+                    color = colors.onPrimary,
+                )
+            },
+            text = {
+                Text(
+                    text = article.description,
+                    style = typography.body1,
+                    color = colors.onPrimary,
                 )
             },
             confirmButton = {
                 TextButton(onClick = onDismiss) {
-                    Text(text = stringResource(id = R.string.dismiss))
+                    Text(
+                        text = stringResource(id = R.string.ok),
+                        color = colors.onPrimary
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = onDismiss) {
+                    Text(
+                        text = stringResource(id = R.string.dismiss),
+                        color = colors.onPrimary
+                    )
                 }
             }
         )
