@@ -1,9 +1,8 @@
 package com.dhimandasgupta.myjetpacknews.ui.screens
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.ContentGravity
-import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.ScrollableRow
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -21,6 +20,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumnFor
+import androidx.compose.foundation.lazy.LazyRowFor
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.AlertDialogButtonLayout.Stacked
 import androidx.compose.material.BottomAppBar
@@ -39,9 +40,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextAlign.Center
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.dhimandasgupta.data.presentaion.ArticleUIModel
 import com.dhimandasgupta.data.presentaion.ErrorUIModel
@@ -70,7 +73,14 @@ fun ThemedSingleSourceScreen(singleSourceViewModel: SingleSourceViewModel) {
 
     Scaffold(
         topBar = { NewsTopAppBar(source = newsUiState.value.currentSource) },
-        bodyContent = { NewsBody(uiModels = newsUiState.value.uiModels) },
+        bodyContent = {
+            NewsBody(
+                uiModels = newsUiState.value.uiModels,
+                sources = newsUiState.value.allSources
+            ) { source ->
+                if (!source.selected) singleSourceViewModel.fetchNewsFromSource(source)
+            }
+        },
         bottomBar = {
             NewsBottomAppBar(sources = newsUiState.value.allSources) { source ->
                 if (!source.selected) singleSourceViewModel.fetchNewsFromSource(source)
@@ -93,22 +103,45 @@ fun NewsTopAppBar(source: Source) {
 }
 
 @Composable
-fun NewsBody(uiModels: UIModels) {
+fun NewsBody(uiModels: UIModels, sources: List<Source>, onSourceSelected: (Source) -> Unit) {
     Box(
-        Modifier.weight(1f, true),
-        backgroundColor = colors.surface
+        Modifier.fillMaxSize(),
+        backgroundColor = colors.surface,
     ) {
-        NewsContainer(uiModels = uiModels)
+        val context = ContextAmbient.current
+        val leftSourcesWeight = if (!context.resources.getBoolean(R.bool.portrait)) 0.2f else 0.0f
+
+        Row(modifier = Modifier.fillMaxWidth()) {
+            if (!context.resources.getBoolean(R.bool.portrait)) {
+                LazyColumnFor(
+                    items = sources,
+                    modifier = Modifier.weight(
+                        leftSourcesWeight, true
+                    ).fillMaxHeight().padding(start = 8.dp)
+                ) {
+                    BottomAppBarItem(
+                        source = it,
+                        onSourceSelected = onSourceSelected
+                    )
+                }
+            }
+
+            Box(modifier = Modifier.weight(1f - leftSourcesWeight, true)) {
+                NewsContainer(uiModels = uiModels)
+            }
+        }
     }
 }
 
 @Composable
 fun NewsContainer(uiModels: UIModels) {
-    when (uiModels) {
-        is IdleUIModel -> RenderIdle()
-        is LoadingUIModel -> RenderLoading(source = uiModels.source)
-        is SuccessUIModel -> RenderArticles(articles = uiModels.articlesUIModel.articles)
-        is ErrorUIModel -> RenderError(errorUIModel = uiModels)
+    Crossfade(current = uiModels) {
+        when (uiModels) {
+            is IdleUIModel -> RenderIdle()
+            is LoadingUIModel -> RenderLoading(source = uiModels.source)
+            is SuccessUIModel -> RenderArticles(articles = uiModels.articlesUIModel.articles)
+            is ErrorUIModel -> RenderError(errorUIModel = uiModels)
+        }
     }
 }
 
@@ -155,12 +188,13 @@ fun RenderLoading(source: Source) {
 
 @Composable
 fun RenderArticles(articles: List<ArticleUIModel>) {
-    ScrollableColumn(modifier = Modifier.weight(1f, true).padding(start = 16.dp, end = 16.dp)) {
-        articles.map {
-            RenderArticle(article = it)
-        }
-        Spacer(modifier = Modifier.fillMaxWidth().height(64.dp))
+    LazyColumnFor(
+        items = articles,
+        modifier = Modifier.weight(1f, true).padding(start = 16.dp, end = 16.dp)
+    ) {
+        RenderArticle(article = it)
     }
+    Spacer(modifier = Modifier.fillMaxWidth().height(72.dp))
 }
 
 @Composable
@@ -175,7 +209,11 @@ fun RenderArticle(article: ArticleUIModel) {
         shape = shapes.medium,
         elevation = 8.dp,
         color = colors.surface,
-        modifier = Modifier.fillMaxWidth().clickable(enabled = true, indication = RippleIndication(bounded = true), onClick = { showDialog.value = true })
+        modifier = Modifier.fillMaxWidth().clickable(
+            enabled = true,
+            indication = RippleIndication(bounded = true),
+            onClick = { showDialog.value = true }
+        )
     ) {
         Column {
             Spacer(
@@ -253,11 +291,16 @@ fun RenderError(errorUIModel: ErrorUIModel) {
 
 @Composable
 fun NewsBottomAppBar(sources: List<Source>, onSourceSelected: (Source) -> Unit) {
-    BottomAppBar(modifier = Modifier.wrapContentHeight(align = CenterVertically)) {
-        ScrollableRow(modifier = Modifier.fillMaxHeight()) {
-            sources.map { source ->
+    val context = ContextAmbient.current
+
+    if (context.resources.getBoolean(R.bool.portrait)) {
+        BottomAppBar(modifier = Modifier.wrapContentHeight(align = CenterVertically)) {
+            LazyRowFor(
+                items = sources,
+                modifier = Modifier.fillMaxHeight()
+            ) {
                 BottomAppBarItem(
-                    source = source,
+                    source = it,
                     onSourceSelected = onSourceSelected
                 )
             }
@@ -268,8 +311,7 @@ fun NewsBottomAppBar(sources: List<Source>, onSourceSelected: (Source) -> Unit) 
 @Composable
 fun BottomAppBarItem(source: Source, onSourceSelected: (Source) -> Unit) {
     Column(
-        modifier = Modifier.fillMaxHeight()
-            .padding(start = 8.dp, top = 0.dp, end = 8.dp, bottom = 0.dp)
+        modifier = Modifier.fillMaxSize()
             .clickable(
                 enabled = true,
                 indication = RippleIndication(bounded = true),
@@ -289,8 +331,8 @@ fun BottomAppBarItem(source: Source, onSourceSelected: (Source) -> Unit) {
             style = if (source.selected) typography.h5 else typography.h6,
             color = colors.onPrimary,
             textAlign = Center,
-            modifier = Modifier.wrapContentHeight(align = CenterVertically)
-                .weight(1f, true)
+            textDecoration = if (source.selected) TextDecoration.None else TextDecoration.LineThrough,
+            modifier = Modifier.wrapContentSize().padding(8.dp)
         )
         if (source.selected) {
             Box(

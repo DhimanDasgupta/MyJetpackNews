@@ -18,8 +18,4 @@ val pages = listOf(
         name = "Multiple Sources at a time",
         clazz = MultiSourceActivity::class.java
     ),
-    Page(
-        name = "Single source news at a time 2",
-        clazz = SingleSourceActivity::class.java
-    )
 )
