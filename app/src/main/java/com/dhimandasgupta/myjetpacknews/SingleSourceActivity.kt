@@ -15,7 +15,9 @@ class SingleSourceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            SingleSourceScreen(singleSourceViewModel)
+            SingleSourceScreen(singleSourceViewModel) {
+                finish()
+            }
         }
     }
 }

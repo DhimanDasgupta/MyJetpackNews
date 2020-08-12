@@ -3,6 +3,7 @@ package com.dhimandasgupta.myjetpacknews.ui.screens
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.ContentGravity
+import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -27,6 +28,7 @@ import androidx.compose.material.AlertDialogButtonLayout.Stacked
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.Scaffold
@@ -42,6 +44,7 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextAlign.Center
 import androidx.compose.ui.text.style.TextDecoration
@@ -61,18 +64,18 @@ import com.dhimandasgupta.myjetpacknews.viewmodel.SingleSourceViewModel
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
 @Composable
-fun SingleSourceScreen(singleSourceViewModel: SingleSourceViewModel) {
+fun SingleSourceScreen(singleSourceViewModel: SingleSourceViewModel, onUpClicked: () -> Unit) {
     MyNewsTheme {
-        ThemedSingleSourceScreen(singleSourceViewModel = singleSourceViewModel)
+        ThemedSingleSourceScreen(singleSourceViewModel = singleSourceViewModel, onUpClicked = onUpClicked)
     }
 }
 
 @Composable
-fun ThemedSingleSourceScreen(singleSourceViewModel: SingleSourceViewModel) {
+fun ThemedSingleSourceScreen(singleSourceViewModel: SingleSourceViewModel, onUpClicked: () -> Unit) {
     val newsUiState = singleSourceViewModel.newsUiState.observeAsState(initial = initialNewsUiState)
 
     Scaffold(
-        topBar = { NewsTopAppBar(source = newsUiState.value.currentSource) },
+        topBar = { NewsTopAppBar(source = newsUiState.value.currentSource, onUpClicked = onUpClicked) },
         bodyContent = {
             NewsBody(
                 uiModels = newsUiState.value.uiModels,
@@ -90,8 +93,13 @@ fun ThemedSingleSourceScreen(singleSourceViewModel: SingleSourceViewModel) {
 }
 
 @Composable
-fun NewsTopAppBar(source: Source) {
+fun NewsTopAppBar(source: Source, onUpClicked: () -> Unit) {
     TopAppBar {
+        IconButton(
+            onClick = { onUpClicked.invoke() },
+            modifier = Modifier.wrapContentSize(align = Alignment.Center).gravity(align = CenterVertically),
+            icon = { Icon(asset = vectorResource(id = R.drawable.ic_arrow_back), tint = colors.onPrimary) }
+        )
         Text(
             text = stringResource(id = R.string.news_from, formatArgs = arrayOf(source.title)),
             style = typography.h5,

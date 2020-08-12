@@ -9,7 +9,7 @@ class MultiSourceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MultipleSourceScreen()
+            MultipleSourceScreen(onUpClicked = { finish() })
         }
     }
 }

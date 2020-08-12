@@ -1,6 +1,8 @@
 package com.dhimandasgupta.myjetpacknews.ui.screens
 
 import android.content.Intent
+import androidx.compose.foundation.Box
+import androidx.compose.foundation.ContentGravity
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.ColumnScope.gravity
@@ -14,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumnForIndexed
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.TopAppBar
+import androidx.compose.material.ripple.RippleIndication
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -93,12 +96,20 @@ fun RenderPortraitContent(pages: List<Page>) {
 
 @Composable
 fun RenderContent(page: Page, onClick: () -> Unit) {
-    Text(
-        text = page.name,
-        style = MaterialTheme.typography.h6,
-        color = MaterialTheme.colors.onSurface,
-        textAlign = TextAlign.Center,
-        modifier = Modifier.fillMaxWidth().weight(1f, true).gravity(Alignment.CenterHorizontally).padding(8.dp)
-            .clickable(onClick = { onClick.invoke() })
-    )
+    Box(
+        modifier = Modifier.fillMaxWidth().weight(1f, true).gravity(Alignment.CenterHorizontally).padding(8.dp).clickable(
+            enabled = true,
+            indication = RippleIndication(),
+            onClick = { onClick.invoke() }
+        ),
+        gravity = ContentGravity.Center
+    ) {
+        Text(
+            text = page.name,
+            style = MaterialTheme.typography.h6,
+            color = MaterialTheme.colors.onSurface,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.wrapContentSize(Alignment.Center)
+        )
+    }
 }
