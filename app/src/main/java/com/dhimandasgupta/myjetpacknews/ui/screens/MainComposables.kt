@@ -1,6 +1,7 @@
 package com.dhimandasgupta.myjetpacknews.ui.screens
 
 import android.content.Intent
+import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.ContentGravity
 import androidx.compose.foundation.Text
@@ -20,6 +21,7 @@ import androidx.compose.material.ripple.RippleIndication
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ConfigurationAmbient
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -54,10 +56,8 @@ fun MainTopAppBar() {
 
 @Composable
 fun MainContent(pages: List<Page>) {
-    val context = ContextAmbient.current
-
-    when (context.resources.getInteger(R.integer.number_of_rows)) {
-        2 -> RenderLandscapeContent(pages = pages)
+    when (ConfigurationAmbient.current.orientation) {
+        ORIENTATION_LANDSCAPE -> RenderLandscapeContent(pages = pages)
         else -> RenderPortraitContent(pages = pages)
     }
 }

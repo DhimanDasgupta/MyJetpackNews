@@ -20,7 +20,7 @@ object Deps {
     const val hiltGradlePlugin = "com.google.dagger:hilt-android-gradle-plugin:${Hilt.version}"
 
     object Kotlin {
-        const val version = "1.4.0-rc"
+        const val version = "1.4.0"
         const val stdLib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
         const val common = "org.jetbrains.kotlin:kotlin-stdlib-common:$version"
@@ -28,7 +28,7 @@ object Deps {
         const val compilerVersion = "1.4.0-dev-withExperimentalGoogleExtensions-20200720"
 
         object Coroutine {
-            private const val version = "1.3.8-1.4.0-rc"
+            private const val version = "1.3.9"
 
             const val coroutineCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
             const val coroutineAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"

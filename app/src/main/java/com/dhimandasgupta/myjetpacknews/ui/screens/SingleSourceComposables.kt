@@ -1,5 +1,7 @@
 package com.dhimandasgupta.myjetpacknews.ui.screens
 
+import android.content.res.Configuration.ORIENTATION_LANDSCAPE
+import android.content.res.Configuration.ORIENTATION_PORTRAIT
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.ContentGravity
@@ -37,12 +39,12 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.ripple.RippleIndication
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.state
+import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.platform.ConfigurationAmbient
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
@@ -116,11 +118,11 @@ fun NewsBody(uiModels: UIModels, sources: List<Source>, onSourceSelected: (Sourc
         Modifier.fillMaxSize(),
         backgroundColor = colors.surface,
     ) {
-        val context = ContextAmbient.current
-        val leftSourcesWeight = if (!context.resources.getBoolean(R.bool.portrait)) 0.2f else 0.0f
+        val isLandscape = ConfigurationAmbient.current.orientation == ORIENTATION_LANDSCAPE
+        val leftSourcesWeight = if (isLandscape) 0.2f else 0.0f
 
         Row(modifier = Modifier.fillMaxWidth()) {
-            if (!context.resources.getBoolean(R.bool.portrait)) {
+            if (isLandscape) {
                 LazyColumnFor(
                     items = sources,
                     modifier = Modifier.weight(
@@ -207,7 +209,7 @@ fun RenderArticles(articles: List<ArticleUIModel>) {
 
 @Composable
 fun RenderArticle(article: ArticleUIModel) {
-    val showDialog = state { false }
+    val showDialog = savedInstanceState { false }
     if (showDialog.value) {
         ShowArticleInADialog(article = article) { showDialog.value = false }
     }
@@ -299,9 +301,7 @@ fun RenderError(errorUIModel: ErrorUIModel) {
 
 @Composable
 fun NewsBottomAppBar(sources: List<Source>, onSourceSelected: (Source) -> Unit) {
-    val context = ContextAmbient.current
-
-    if (context.resources.getBoolean(R.bool.portrait)) {
+    if (ConfigurationAmbient.current.orientation == ORIENTATION_PORTRAIT) {
         BottomAppBar(modifier = Modifier.wrapContentHeight(align = CenterVertically)) {
             LazyRowFor(
                 items = sources,
