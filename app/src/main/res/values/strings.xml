@@ -8,4 +8,5 @@
     <string name="news_from">News from %1s</string>
     <string name="dismiss">Dismiss</string>
     <string name="ok">Ok</string>
+    <string name="multi_source_title">News for you</string>
 </resources>

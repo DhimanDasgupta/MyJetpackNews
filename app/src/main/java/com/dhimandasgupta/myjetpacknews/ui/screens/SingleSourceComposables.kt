@@ -25,8 +25,6 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.foundation.lazy.LazyRowFor
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.AlertDialogButtonLayout.Stacked
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
@@ -34,12 +32,10 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.Scaffold
-import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.ripple.RippleIndication
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -209,11 +205,6 @@ fun RenderArticles(articles: List<ArticleUIModel>) {
 
 @Composable
 fun RenderArticle(article: ArticleUIModel) {
-    val showDialog = savedInstanceState { false }
-    if (showDialog.value) {
-        ShowArticleInADialog(article = article) { showDialog.value = false }
-    }
-
     Spacer(modifier = Modifier.wrapContentWidth().wrapContentHeight().preferredSize(8.dp))
     Card(
         shape = shapes.medium,
@@ -222,7 +213,7 @@ fun RenderArticle(article: ArticleUIModel) {
         modifier = Modifier.fillMaxWidth().clickable(
             enabled = true,
             indication = RippleIndication(bounded = true),
-            onClick = { showDialog.value = true }
+            onClick = {}
         )
     ) {
         Column {
@@ -350,45 +341,5 @@ fun BottomAppBarItem(source: Source, onSourceSelected: (Source) -> Unit) {
                 backgroundColor = colors.onPrimary
             )
         }
-    }
-}
-
-@Composable
-fun ShowArticleInADialog(article: ArticleUIModel, onDismiss: () -> Unit) {
-    MyNewsTheme {
-        AlertDialog(
-            buttonLayout = Stacked,
-            onCloseRequest = onDismiss,
-            title = {
-                Text(
-                    text = article.title,
-                    style = typography.body2,
-                    color = colors.onPrimary,
-                )
-            },
-            text = {
-                Text(
-                    text = article.description,
-                    style = typography.body1,
-                    color = colors.onPrimary,
-                )
-            },
-            confirmButton = {
-                TextButton(onClick = onDismiss) {
-                    Text(
-                        text = stringResource(id = R.string.ok),
-                        color = colors.onPrimary
-                    )
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = onDismiss) {
-                    Text(
-                        text = stringResource(id = R.string.dismiss),
-                        color = colors.onPrimary
-                    )
-                }
-            }
-        )
     }
 }
