@@ -8,6 +8,7 @@ import com.dhimandasgupta.data.domain.NewsUseCase
 import com.dhimandasgupta.data.domain.Params
 import com.dhimandasgupta.data.presentaion.ErrorUIModel
 import com.dhimandasgupta.data.presentaion.Source
+import com.dhimandasgupta.data.presentaion.SuccessUIModel
 import com.dhimandasgupta.data.presentaion.UIModels
 import com.dhimandasgupta.data.presentaion.sources
 import com.dhimandasgupta.data.presentaion.toUIModel
@@ -21,7 +22,7 @@ class MultipleSourceViewModel @ViewModelInject constructor(
     private val sourceWithUiMap = HashMap<Source, UIModels>()
 
     suspend fun fetchNewsFrom(source: Source): UIModels {
-        if (sourceWithUiMap.containsKey(source)) {
+        if (sourceWithUiMap.containsKey(source) && sourceWithUiMap[source] is SuccessUIModel) {
             return sourceWithUiMap[source]!!
         }
 

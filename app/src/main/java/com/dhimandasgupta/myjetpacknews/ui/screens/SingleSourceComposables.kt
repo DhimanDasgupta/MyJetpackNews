@@ -62,14 +62,14 @@ import com.dhimandasgupta.myjetpacknews.viewmodel.SingleSourceViewModel
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
 @Composable
-fun SingleSourceScreen(singleSourceViewModel: SingleSourceViewModel, onUpClicked: () -> Unit) {
+fun SingleSourceScreen(singleSourceViewModel: SingleSourceViewModel, onUpClicked: () -> Unit, onNewsClicked: (String) -> Unit) {
     MyNewsTheme {
-        ThemedSingleSourceScreen(singleSourceViewModel = singleSourceViewModel, onUpClicked = onUpClicked)
+        ThemedSingleSourceScreen(singleSourceViewModel = singleSourceViewModel, onUpClicked = onUpClicked, onNewsClicked = onNewsClicked)
     }
 }
 
 @Composable
-fun ThemedSingleSourceScreen(singleSourceViewModel: SingleSourceViewModel, onUpClicked: () -> Unit) {
+fun ThemedSingleSourceScreen(singleSourceViewModel: SingleSourceViewModel, onUpClicked: () -> Unit, onNewsClicked: (String) -> Unit) {
     val newsUiState = singleSourceViewModel.newsUiState.observeAsState(initial = initialNewsUiState)
 
     Scaffold(
@@ -77,7 +77,8 @@ fun ThemedSingleSourceScreen(singleSourceViewModel: SingleSourceViewModel, onUpC
         bodyContent = {
             NewsBody(
                 uiModels = newsUiState.value.uiModels,
-                sources = newsUiState.value.allSources
+                sources = newsUiState.value.allSources,
+                onNewsClicked = onNewsClicked
             ) { source ->
                 if (!source.selected) singleSourceViewModel.fetchNewsFromSource(source)
             }
@@ -109,7 +110,7 @@ fun NewsTopAppBar(source: Source, onUpClicked: () -> Unit) {
 }
 
 @Composable
-fun NewsBody(uiModels: UIModels, sources: List<Source>, onSourceSelected: (Source) -> Unit) {
+fun NewsBody(uiModels: UIModels, sources: List<Source>, onNewsClicked: (String) -> Unit, onSourceSelected: (Source) -> Unit) {
     Box(
         Modifier.fillMaxSize(),
         backgroundColor = colors.surface,
@@ -133,19 +134,19 @@ fun NewsBody(uiModels: UIModels, sources: List<Source>, onSourceSelected: (Sourc
             }
 
             Box(modifier = Modifier.weight(1f - leftSourcesWeight, true)) {
-                NewsContainer(uiModels = uiModels)
+                NewsContainer(uiModels = uiModels, onNewsClicked)
             }
         }
     }
 }
 
 @Composable
-fun NewsContainer(uiModels: UIModels) {
+fun NewsContainer(uiModels: UIModels, onNewsClicked: (String) -> Unit) {
     Crossfade(current = uiModels) {
         when (uiModels) {
             is IdleUIModel -> RenderIdle()
             is LoadingUIModel -> RenderLoading(source = uiModels.source)
-            is SuccessUIModel -> RenderArticles(articles = uiModels.articlesUIModel.articles)
+            is SuccessUIModel -> RenderArticles(articles = uiModels.articlesUIModel.articles, onNewsClicked)
             is ErrorUIModel -> RenderError(errorUIModel = uiModels)
         }
     }
@@ -193,27 +194,27 @@ fun RenderLoading(source: Source) {
 }
 
 @Composable
-fun RenderArticles(articles: List<ArticleUIModel>) {
+fun RenderArticles(articles: List<ArticleUIModel>, onNewsClicked: (String) -> Unit) {
     LazyColumnFor(
         items = articles,
         modifier = Modifier.weight(1f, true).padding(start = 16.dp, end = 16.dp)
     ) {
-        RenderArticle(article = it)
+        RenderArticle(article = it, onNewsClicked)
     }
     Spacer(modifier = Modifier.fillMaxWidth().height(72.dp))
 }
 
 @Composable
-fun RenderArticle(article: ArticleUIModel) {
+fun RenderArticle(article: ArticleUIModel, onNewsClicked: (String) -> Unit) {
     Spacer(modifier = Modifier.wrapContentWidth().wrapContentHeight().preferredSize(8.dp))
     Card(
         shape = shapes.medium,
         elevation = 8.dp,
-        color = colors.surface,
+        contentColor = colors.surface,
         modifier = Modifier.fillMaxWidth().clickable(
             enabled = true,
             indication = RippleIndication(bounded = true),
-            onClick = {}
+            onClick = { onNewsClicked.invoke(article.url) }
         )
     ) {
         Column {

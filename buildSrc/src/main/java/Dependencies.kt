@@ -10,7 +10,7 @@ object Versions {
     const val minSdk = 21
     const val targetSdk = 30
     const val compileSdk = 30
-    const val buildTool = "30.0.0"
+    const val buildTool = "30.0.2"
     const val kotlin = Deps.Kotlin.version
 }
 
@@ -66,7 +66,7 @@ object Deps {
         const val material = "com.google.android.material:material:$androidXVersion"
 
         object Compose {
-            private const val version = "0.1.0-dev16"
+            private const val version = "0.1.0-dev17"
 
             const val ui = "androidx.compose.ui:ui:$version"
             const val runtime = "androidx.compose.runtime:runtime:$version"
@@ -81,14 +81,14 @@ object Deps {
         }
 
         object Accompanist {
-            private const val version = "0.1.8"
+            private const val version = "0.1.9"
 
             const val accompanistCoil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
             const val accompanistMdc = "dev.chrisbanes.accompanist:accompanist-mdc-theme:$version"
         }
 
         object Lifecycle {
-            private const val version = "2.3.0-alpha06"
+            private const val version = "2.3.0-alpha07"
 
             const val runtimeKtx = "androidx.lifecycle:lifecycle-runtime-ktx:$version"
             const val viewModelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"

@@ -30,11 +30,11 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.ripple.RippleIndication
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.launchInComposition
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.state
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -57,20 +57,21 @@ import com.dhimandasgupta.myjetpacknews.viewmodel.MultipleSourceViewModel
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
 @Composable
-fun MultipleSourceScreen(multipleSourceViewModel: MultipleSourceViewModel, onUpClicked: () -> Unit) {
+fun MultipleSourceScreen(multipleSourceViewModel: MultipleSourceViewModel, onUpClicked: () -> Unit, onNewsClicked: (String) -> Unit) {
     MyNewsTheme {
         ThemedMultiSourceScreen(
             multipleSourceViewModel = multipleSourceViewModel,
-            onUpClicked = onUpClicked
+            onUpClicked = onUpClicked,
+            onNewsClicked = onNewsClicked
         )
     }
 }
 
 @Composable
-fun ThemedMultiSourceScreen(multipleSourceViewModel: MultipleSourceViewModel, onUpClicked: () -> Unit) {
+fun ThemedMultiSourceScreen(multipleSourceViewModel: MultipleSourceViewModel, onUpClicked: () -> Unit, onNewsClicked: (String) -> Unit) {
     Scaffold(
         topBar = { NewsTopAppBarForMultiSource(onUpClicked = onUpClicked) },
-        bodyContent = { NewsBodyForMultiSource(multipleSourceViewModel = multipleSourceViewModel) }
+        bodyContent = { NewsBodyForMultiSource(multipleSourceViewModel = multipleSourceViewModel, onNewsClicked = onNewsClicked) }
     )
 }
 
@@ -99,7 +100,7 @@ fun NewsTopAppBarForMultiSource(onUpClicked: () -> Unit) {
 }
 
 @Composable
-fun NewsBodyForMultiSource(multipleSourceViewModel: MultipleSourceViewModel) {
+fun NewsBodyForMultiSource(multipleSourceViewModel: MultipleSourceViewModel, onNewsClicked: (String) -> Unit) {
     val newsUiState = multipleSourceViewModel.sourcesLiveData.observeAsState(initial = emptyList())
 
     Box(
@@ -112,20 +113,21 @@ fun NewsBodyForMultiSource(multipleSourceViewModel: MultipleSourceViewModel) {
         ) {
             NewsRowForSource(
                 multipleSourceViewModel = multipleSourceViewModel,
-                source = it
+                source = it,
+                onNewsClicked = onNewsClicked
             )
         }
     }
 }
 
 @Composable
-fun NewsRowForSource(multipleSourceViewModel: MultipleSourceViewModel, source: Source) {
+fun NewsRowForSource(multipleSourceViewModel: MultipleSourceViewModel, source: Source, onNewsClicked: (String) -> Unit) {
     Column {
-        var news by state<UIModels> { LoadingUIModel(source) }
+        var news: MutableState<UIModels> = remember { mutableStateOf(LoadingUIModel(source)) }
 
         launchInComposition(
             block = {
-                news = multipleSourceViewModel.fetchNewsFrom(source)
+                news.value = multipleSourceViewModel.fetchNewsFrom(source)
             }
         )
         Spacer(modifier = Modifier.fillMaxWidth().height(4.dp))
@@ -138,11 +140,11 @@ fun NewsRowForSource(multipleSourceViewModel: MultipleSourceViewModel, source: S
         )
         Spacer(modifier = Modifier.fillMaxWidth().height(4.dp))
 
-        when (news) {
+        when (news.value) {
             is IdleUIModel -> RenderNewsIdleState()
             is LoadingUIModel -> RenderLoadingState(source = source)
-            is SuccessUIModel -> RenderArticlesState(articlesUIModel = (news as SuccessUIModel).articlesUIModel)
-            is ErrorUIModel -> RenderErrorState(errorUIModel = news as ErrorUIModel)
+            is SuccessUIModel -> RenderArticlesState(articlesUIModel = (news.value as SuccessUIModel).articlesUIModel, onNewsClicked = onNewsClicked)
+            is ErrorUIModel -> RenderErrorState(errorUIModel = news.value as ErrorUIModel)
         }
     }
 }
@@ -179,27 +181,27 @@ fun RenderLoadingState(source: Source) {
 }
 
 @Composable
-fun RenderArticlesState(articlesUIModel: ArticlesUIModel) {
+fun RenderArticlesState(articlesUIModel: ArticlesUIModel, onNewsClicked: (String) -> Unit) {
     ScrollableRow(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
         articlesUIModel.articles.map {
-            RenderEachArticle(article = it)
+            RenderEachArticle(article = it, onNewsClicked = onNewsClicked)
         }
     }
 }
 
 @Composable
-fun RenderEachArticle(article: ArticleUIModel) {
+fun RenderEachArticle(article: ArticleUIModel, onNewsClicked: (String) -> Unit) {
     val cardSize = 260.dp
 
     Spacer(modifier = Modifier.fillMaxSize().preferredSize(16.dp))
     Card(
         shape = shapes.medium,
         elevation = 8.dp,
-        color = MaterialTheme.colors.surface,
+        contentColor = MaterialTheme.colors.surface,
         modifier = Modifier.size(cardSize).clickable(
             enabled = true,
             indication = RippleIndication(bounded = true),
-            onClick = {}
+            onClick = { onNewsClicked.invoke(article.url) }
         )
     ) {
         Stack(modifier = Modifier.fillMaxSize()) {
