@@ -80,14 +80,14 @@ fun ThemedSingleSourceScreen(singleSourceViewModel: SingleSourceViewModel, onUpC
                 sources = newsUiState.value.allSources,
                 onNewsClicked = onNewsClicked
             ) { source ->
-                if (!source.selected) singleSourceViewModel.fetchNewsFromSource(source)
+                if (!source.selected) singleSourceViewModel.fetchNewsFromSource(source = source)
             }
         },
         bottomBar = {
             NewsBottomAppBar(sources = newsUiState.value.allSources) { source ->
-                if (!source.selected) singleSourceViewModel.fetchNewsFromSource(source)
+                if (!source.selected) singleSourceViewModel.fetchNewsFromSource(source = source)
             }
-        }
+        },
     )
 }
 
@@ -112,11 +112,11 @@ fun NewsTopAppBar(source: Source, onUpClicked: () -> Unit) {
 @Composable
 fun NewsBody(uiModels: UIModels, sources: List<Source>, onNewsClicked: (String) -> Unit, onSourceSelected: (Source) -> Unit) {
     Box(
-        Modifier.fillMaxSize(),
+        Modifier.weight(1f, false),
         backgroundColor = colors.surface,
     ) {
         val isLandscape = ConfigurationAmbient.current.orientation == ORIENTATION_LANDSCAPE
-        val leftSourcesWeight = if (isLandscape) 0.2f else 0.0f
+        val leftSourcesWeight = if (isLandscape) 0.3f else 0.0f
 
         Row(modifier = Modifier.fillMaxWidth()) {
             if (isLandscape) {
@@ -197,60 +197,60 @@ fun RenderLoading(source: Source) {
 fun RenderArticles(articles: List<ArticleUIModel>, onNewsClicked: (String) -> Unit) {
     LazyColumnFor(
         items = articles,
-        modifier = Modifier.weight(1f, true).padding(start = 16.dp, end = 16.dp)
+        modifier = Modifier.weight(1f, true)
     ) {
         RenderArticle(article = it, onNewsClicked)
     }
-    Spacer(modifier = Modifier.fillMaxWidth().height(72.dp))
 }
 
 @Composable
 fun RenderArticle(article: ArticleUIModel, onNewsClicked: (String) -> Unit) {
-    Spacer(modifier = Modifier.wrapContentWidth().wrapContentHeight().preferredSize(8.dp))
-    Card(
-        shape = shapes.medium,
-        elevation = 8.dp,
-        contentColor = colors.surface,
-        modifier = Modifier.fillMaxWidth().clickable(
-            enabled = true,
-            indication = RippleIndication(bounded = true),
-            onClick = { onNewsClicked.invoke(article.url) }
-        )
-    ) {
-        Column {
-            Spacer(
-                modifier = Modifier.wrapContentWidth().wrapContentHeight().preferredSize(8.dp)
+    Box(modifier = Modifier.fillMaxSize().padding(8.dp)) {
+        Card(
+            shape = shapes.medium,
+            elevation = 8.dp,
+            contentColor = colors.surface,
+            modifier = Modifier.fillMaxWidth().clickable(
+                enabled = true,
+                indication = RippleIndication(bounded = true),
+                onClick = { onNewsClicked.invoke(article.url) }
             )
-            Row {
+        ) {
+            Column {
                 Spacer(
-                    modifier = Modifier.wrapContentWidth().wrapContentHeight()
-                        .preferredSize(8.dp)
+                    modifier = Modifier.wrapContentWidth().wrapContentHeight().preferredSize(8.dp)
                 )
-                CoilImageWithCrossfade(
-                    data = article.urlToImage,
-                    modifier = Modifier.preferredSize(100.dp)
-                )
-                Column(modifier = Modifier.padding(8.dp)) {
-                    Text(
-                        text = article.title,
-                        style = typography.h6,
-                        color = colors.onSurface,
-                        modifier = Modifier.padding(bottom = 4.dp)
-                    )
+                Row {
                     Spacer(
                         modifier = Modifier.wrapContentWidth().wrapContentHeight()
-                            .preferredSize(4.dp)
+                            .preferredSize(8.dp)
                     )
-                    Text(
-                        text = article.description,
-                        style = typography.body1,
-                        color = colors.onSurface,
-                        modifier = Modifier.padding(top = 4.dp)
+                    CoilImageWithCrossfade(
+                        data = article.urlToImage,
+                        modifier = Modifier.preferredSize(100.dp)
                     )
-                    Spacer(
-                        modifier = Modifier.wrapContentWidth().wrapContentHeight()
-                            .preferredSize(4.dp)
-                    )
+                    Column(modifier = Modifier.padding(8.dp)) {
+                        Text(
+                            text = article.title,
+                            style = typography.h6,
+                            color = colors.onSurface,
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
+                        Spacer(
+                            modifier = Modifier.wrapContentWidth().wrapContentHeight()
+                                .preferredSize(4.dp)
+                        )
+                        Text(
+                            text = article.description,
+                            style = typography.body1,
+                            color = colors.onSurface,
+                            modifier = Modifier.padding(top = 4.dp)
+                        )
+                        Spacer(
+                            modifier = Modifier.wrapContentWidth().wrapContentHeight()
+                                .preferredSize(4.dp)
+                        )
+                    }
                 }
             }
         }
@@ -310,6 +310,9 @@ fun NewsBottomAppBar(sources: List<Source>, onSourceSelected: (Source) -> Unit) 
 
 @Composable
 fun BottomAppBarItem(source: Source, onSourceSelected: (Source) -> Unit) {
+    val isLandscape = ConfigurationAmbient.current.orientation == ORIENTATION_LANDSCAPE
+    val textColor = if (isLandscape) colors.onSurface else colors.onPrimary
+
     Column(
         modifier = Modifier.fillMaxSize()
             .clickable(
@@ -323,13 +326,13 @@ fun BottomAppBarItem(source: Source, onSourceSelected: (Source) -> Unit) {
                 modifier = Modifier.width(32.dp).height(2.dp)
                     .gravity(align = CenterHorizontally),
                 shape = shapes.medium,
-                backgroundColor = colors.onPrimary
+                backgroundColor = textColor
             )
         }
         Text(
             text = source.title,
             style = if (source.selected) typography.h5 else typography.h6,
-            color = colors.onPrimary,
+            color = textColor,
             textAlign = Center,
             textDecoration = if (source.selected) TextDecoration.None else TextDecoration.LineThrough,
             modifier = Modifier.wrapContentSize().padding(8.dp)
@@ -339,7 +342,7 @@ fun BottomAppBarItem(source: Source, onSourceSelected: (Source) -> Unit) {
                 modifier = Modifier.width(64.dp).height(2.dp)
                     .gravity(align = CenterHorizontally),
                 shape = shapes.medium,
-                backgroundColor = colors.onPrimary
+                backgroundColor = textColor
             )
         }
     }

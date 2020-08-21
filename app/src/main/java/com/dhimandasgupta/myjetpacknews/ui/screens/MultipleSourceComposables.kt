@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -123,7 +122,7 @@ fun NewsBodyForMultiSource(multipleSourceViewModel: MultipleSourceViewModel, onN
 @Composable
 fun NewsRowForSource(multipleSourceViewModel: MultipleSourceViewModel, source: Source, onNewsClicked: (String) -> Unit) {
     Column {
-        var news: MutableState<UIModels> = remember { mutableStateOf(LoadingUIModel(source)) }
+        val news: MutableState<UIModels> = remember { mutableStateOf(LoadingUIModel(source)) }
 
         launchInComposition(
             block = {
@@ -134,7 +133,7 @@ fun NewsRowForSource(multipleSourceViewModel: MultipleSourceViewModel, source: S
         Text(
             text = source.title,
             style = MaterialTheme.typography.h5,
-            color = MaterialTheme.colors.onPrimary,
+            color = MaterialTheme.colors.onSurface,
             textAlign = TextAlign.Right,
             modifier = Modifier.fillMaxWidth().wrapContentSize(align = Alignment.Center)
         )
@@ -193,35 +192,36 @@ fun RenderArticlesState(articlesUIModel: ArticlesUIModel, onNewsClicked: (String
 fun RenderEachArticle(article: ArticleUIModel, onNewsClicked: (String) -> Unit) {
     val cardSize = 260.dp
 
-    Spacer(modifier = Modifier.fillMaxSize().preferredSize(16.dp))
-    Card(
-        shape = shapes.medium,
-        elevation = 8.dp,
-        contentColor = MaterialTheme.colors.surface,
-        modifier = Modifier.size(cardSize).clickable(
-            enabled = true,
-            indication = RippleIndication(bounded = true),
-            onClick = { onNewsClicked.invoke(article.url) }
-        )
-    ) {
-        Stack(modifier = Modifier.fillMaxSize()) {
-            CoilImageWithCrossfade(
-                data = article.urlToImage,
-                modifier = Modifier.size(cardSize),
-                contentScale = ContentScale.Crop
+    Box(modifier = Modifier.fillMaxSize().padding(8.dp)) {
+        Card(
+            shape = shapes.medium,
+            elevation = 8.dp,
+            contentColor = MaterialTheme.colors.surface,
+            modifier = Modifier.size(cardSize).clickable(
+                enabled = true,
+                indication = RippleIndication(bounded = true),
+                onClick = { onNewsClicked.invoke(article.url) }
             )
-            Box(
-                modifier = Modifier.gravity(Alignment.BottomCenter).width(cardSize),
-                backgroundColor = MaterialTheme.colors.surface.copy(alpha = 0.6f),
-                shape = shapes.medium.copy(topLeft = CornerSize(0.dp), topRight = CornerSize(0.dp))
-            ) {
-                Text(
-                    text = article.title,
-                    style = MaterialTheme.typography.h6,
-                    color = MaterialTheme.colors.onSurface,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(4.dp)
+        ) {
+            Stack(modifier = Modifier.fillMaxSize()) {
+                CoilImageWithCrossfade(
+                    data = article.urlToImage,
+                    modifier = Modifier.size(cardSize),
+                    contentScale = ContentScale.Crop
                 )
+                Box(
+                    modifier = Modifier.gravity(Alignment.BottomCenter).width(cardSize),
+                    backgroundColor = MaterialTheme.colors.surface.copy(alpha = 0.6f),
+                    shape = shapes.medium.copy(topLeft = CornerSize(0.dp), topRight = CornerSize(0.dp))
+                ) {
+                    Text(
+                        text = article.title,
+                        style = MaterialTheme.typography.h6,
+                        color = MaterialTheme.colors.onSurface,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(4.dp)
+                    )
+                }
             }
         }
     }
