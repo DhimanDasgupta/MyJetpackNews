@@ -1,5 +1,9 @@
 package com.dhimandasgupta.myjetpacknews.ui.screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.ContentGravity
 import androidx.compose.foundation.Icon
@@ -55,6 +59,7 @@ import com.dhimandasgupta.myjetpacknews.ui.common.shapes
 import com.dhimandasgupta.myjetpacknews.viewmodel.MultipleSourceViewModel
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
+@ExperimentalAnimationApi
 @Composable
 fun MultipleSourceScreen(multipleSourceViewModel: MultipleSourceViewModel, onUpClicked: () -> Unit, onNewsClicked: (String) -> Unit) {
     MyNewsTheme {
@@ -66,6 +71,7 @@ fun MultipleSourceScreen(multipleSourceViewModel: MultipleSourceViewModel, onUpC
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
 fun ThemedMultiSourceScreen(multipleSourceViewModel: MultipleSourceViewModel, onUpClicked: () -> Unit, onNewsClicked: (String) -> Unit) {
     Scaffold(
@@ -98,6 +104,7 @@ fun NewsTopAppBarForMultiSource(onUpClicked: () -> Unit) {
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
 fun NewsBodyForMultiSource(multipleSourceViewModel: MultipleSourceViewModel, onNewsClicked: (String) -> Unit) {
     val newsUiState = multipleSourceViewModel.sourcesLiveData.observeAsState(initial = emptyList())
@@ -119,6 +126,7 @@ fun NewsBodyForMultiSource(multipleSourceViewModel: MultipleSourceViewModel, onN
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
 fun NewsRowForSource(multipleSourceViewModel: MultipleSourceViewModel, source: Source, onNewsClicked: (String) -> Unit) {
     Column {
@@ -179,6 +187,7 @@ fun RenderLoadingState(source: Source) {
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
 fun RenderArticlesState(articlesUIModel: ArticlesUIModel, onNewsClicked: (String) -> Unit) {
     ScrollableRow(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
@@ -188,39 +197,47 @@ fun RenderArticlesState(articlesUIModel: ArticlesUIModel, onNewsClicked: (String
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
 fun RenderEachArticle(article: ArticleUIModel, onNewsClicked: (String) -> Unit) {
     val cardSize = 260.dp
 
-    Box(modifier = Modifier.fillMaxSize().padding(8.dp)) {
-        Card(
-            shape = shapes.medium,
-            elevation = 8.dp,
-            contentColor = MaterialTheme.colors.surface,
-            modifier = Modifier.size(cardSize).clickable(
-                enabled = true,
-                indication = RippleIndication(bounded = true),
-                onClick = { onNewsClicked.invoke(article.url) }
-            )
-        ) {
-            Stack(modifier = Modifier.fillMaxSize()) {
-                CoilImageWithCrossfade(
-                    data = article.urlToImage,
-                    modifier = Modifier.size(cardSize),
-                    contentScale = ContentScale.Crop
+    AnimatedVisibility(
+        initiallyVisible = false,
+        visible = true,
+        enter = slideInVertically(initialOffsetY = { it }),
+        exit = slideOutVertically(targetOffsetY = { it })
+    ) {
+        Box(modifier = Modifier.fillMaxSize().padding(8.dp)) {
+            Card(
+                shape = shapes.medium,
+                elevation = 8.dp,
+                contentColor = MaterialTheme.colors.surface,
+                modifier = Modifier.size(cardSize).clickable(
+                    enabled = true,
+                    indication = RippleIndication(bounded = true),
+                    onClick = { onNewsClicked.invoke(article.url) }
                 )
-                Box(
-                    modifier = Modifier.gravity(Alignment.BottomCenter).width(cardSize),
-                    backgroundColor = MaterialTheme.colors.surface.copy(alpha = 0.6f),
-                    shape = shapes.medium.copy(topLeft = CornerSize(0.dp), topRight = CornerSize(0.dp))
-                ) {
-                    Text(
-                        text = article.title,
-                        style = MaterialTheme.typography.h6,
-                        color = MaterialTheme.colors.onSurface,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(4.dp)
+            ) {
+                Stack(modifier = Modifier.fillMaxSize()) {
+                    CoilImageWithCrossfade(
+                        data = article.urlToImage,
+                        modifier = Modifier.size(cardSize),
+                        contentScale = ContentScale.Crop
                     )
+                    Box(
+                        modifier = Modifier.gravity(Alignment.BottomCenter).width(cardSize),
+                        backgroundColor = MaterialTheme.colors.surface.copy(alpha = 0.6f),
+                        shape = shapes.medium.copy(topLeft = CornerSize(0.dp), topRight = CornerSize(0.dp))
+                    ) {
+                        Text(
+                            text = article.title,
+                            style = MaterialTheme.typography.h6,
+                            color = MaterialTheme.colors.onSurface,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(4.dp)
+                        )
+                    }
                 }
             }
         }

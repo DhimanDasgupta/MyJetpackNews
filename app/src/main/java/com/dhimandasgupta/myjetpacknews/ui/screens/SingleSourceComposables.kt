@@ -2,7 +2,11 @@ package com.dhimandasgupta.myjetpacknews.ui.screens
 
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.content.res.Configuration.ORIENTATION_PORTRAIT
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.ContentGravity
 import androidx.compose.foundation.Icon
@@ -61,6 +65,7 @@ import com.dhimandasgupta.myjetpacknews.ui.common.shapes
 import com.dhimandasgupta.myjetpacknews.viewmodel.SingleSourceViewModel
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
+@ExperimentalAnimationApi
 @Composable
 fun SingleSourceScreen(singleSourceViewModel: SingleSourceViewModel, onUpClicked: () -> Unit, onNewsClicked: (String) -> Unit) {
     MyNewsTheme {
@@ -68,6 +73,7 @@ fun SingleSourceScreen(singleSourceViewModel: SingleSourceViewModel, onUpClicked
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
 fun ThemedSingleSourceScreen(singleSourceViewModel: SingleSourceViewModel, onUpClicked: () -> Unit, onNewsClicked: (String) -> Unit) {
     val newsUiState = singleSourceViewModel.newsUiState.observeAsState(initial = initialNewsUiState)
@@ -109,6 +115,7 @@ fun NewsTopAppBar(source: Source, onUpClicked: () -> Unit) {
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
 fun NewsBody(uiModels: UIModels, sources: List<Source>, onNewsClicked: (String) -> Unit, onSourceSelected: (Source) -> Unit) {
     Box(
@@ -140,6 +147,7 @@ fun NewsBody(uiModels: UIModels, sources: List<Source>, onNewsClicked: (String) 
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
 fun NewsContainer(uiModels: UIModels, onNewsClicked: (String) -> Unit) {
     Crossfade(current = uiModels) {
@@ -193,6 +201,7 @@ fun RenderLoading(source: Source) {
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
 fun RenderArticles(articles: List<ArticleUIModel>, onNewsClicked: (String) -> Unit) {
     LazyColumnFor(
@@ -203,53 +212,61 @@ fun RenderArticles(articles: List<ArticleUIModel>, onNewsClicked: (String) -> Un
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
 fun RenderArticle(article: ArticleUIModel, onNewsClicked: (String) -> Unit) {
-    Box(modifier = Modifier.fillMaxSize().padding(8.dp)) {
-        Card(
-            shape = shapes.medium,
-            elevation = 8.dp,
-            contentColor = colors.surface,
-            modifier = Modifier.fillMaxWidth().clickable(
-                enabled = true,
-                indication = RippleIndication(bounded = true),
-                onClick = { onNewsClicked.invoke(article.url) }
-            )
-        ) {
-            Column {
-                Spacer(
-                    modifier = Modifier.wrapContentWidth().wrapContentHeight().preferredSize(8.dp)
+    AnimatedVisibility(
+        initiallyVisible = false,
+        visible = true,
+        enter = slideInHorizontally(initialOffsetX = { it }),
+        exit = slideOutHorizontally(targetOffsetX = { it }),
+    ) {
+        Box(modifier = Modifier.fillMaxSize().padding(8.dp)) {
+            Card(
+                shape = shapes.medium,
+                elevation = 8.dp,
+                contentColor = colors.surface,
+                modifier = Modifier.fillMaxWidth().clickable(
+                    enabled = true,
+                    indication = RippleIndication(bounded = true),
+                    onClick = { onNewsClicked.invoke(article.url) }
                 )
-                Row {
+            ) {
+                Column {
                     Spacer(
-                        modifier = Modifier.wrapContentWidth().wrapContentHeight()
-                            .preferredSize(8.dp)
+                        modifier = Modifier.wrapContentWidth().wrapContentHeight().preferredSize(8.dp)
                     )
-                    CoilImageWithCrossfade(
-                        data = article.urlToImage,
-                        modifier = Modifier.preferredSize(100.dp)
-                    )
-                    Column(modifier = Modifier.padding(8.dp)) {
-                        Text(
-                            text = article.title,
-                            style = typography.h6,
-                            color = colors.onSurface,
-                            modifier = Modifier.padding(bottom = 4.dp)
-                        )
+                    Row {
                         Spacer(
                             modifier = Modifier.wrapContentWidth().wrapContentHeight()
-                                .preferredSize(4.dp)
+                                .preferredSize(8.dp)
                         )
-                        Text(
-                            text = article.description,
-                            style = typography.body1,
-                            color = colors.onSurface,
-                            modifier = Modifier.padding(top = 4.dp)
+                        CoilImageWithCrossfade(
+                            data = article.urlToImage,
+                            modifier = Modifier.preferredSize(100.dp)
                         )
-                        Spacer(
-                            modifier = Modifier.wrapContentWidth().wrapContentHeight()
-                                .preferredSize(4.dp)
-                        )
+                        Column(modifier = Modifier.padding(8.dp)) {
+                            Text(
+                                text = article.title,
+                                style = typography.h6,
+                                color = colors.onSurface,
+                                modifier = Modifier.padding(bottom = 4.dp)
+                            )
+                            Spacer(
+                                modifier = Modifier.wrapContentWidth().wrapContentHeight()
+                                    .preferredSize(4.dp)
+                            )
+                            Text(
+                                text = article.description,
+                                style = typography.body1,
+                                color = colors.onSurface,
+                                modifier = Modifier.padding(top = 4.dp)
+                            )
+                            Spacer(
+                                modifier = Modifier.wrapContentWidth().wrapContentHeight()
+                                    .preferredSize(4.dp)
+                            )
+                        }
                     }
                 }
             }
