@@ -45,6 +45,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.viewModel
 import com.dhimandasgupta.data.presentaion.ArticleUIModel
 import com.dhimandasgupta.data.presentaion.ArticlesUIModel
 import com.dhimandasgupta.data.presentaion.ErrorUIModel
@@ -61,10 +62,9 @@ import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
 @ExperimentalAnimationApi
 @Composable
-fun MultipleSourceScreen(multipleSourceViewModel: MultipleSourceViewModel, onUpClicked: () -> Unit, onNewsClicked: (String) -> Unit) {
+fun MultipleSourceScreen(onUpClicked: () -> Unit, onNewsClicked: (String) -> Unit) {
     MyNewsTheme {
         ThemedMultiSourceScreen(
-            multipleSourceViewModel = multipleSourceViewModel,
             onUpClicked = onUpClicked,
             onNewsClicked = onNewsClicked
         )
@@ -73,7 +73,9 @@ fun MultipleSourceScreen(multipleSourceViewModel: MultipleSourceViewModel, onUpC
 
 @ExperimentalAnimationApi
 @Composable
-fun ThemedMultiSourceScreen(multipleSourceViewModel: MultipleSourceViewModel, onUpClicked: () -> Unit, onNewsClicked: (String) -> Unit) {
+fun ThemedMultiSourceScreen(onUpClicked: () -> Unit, onNewsClicked: (String) -> Unit) {
+    val multipleSourceViewModel: MultipleSourceViewModel = viewModel()
+
     Scaffold(
         topBar = { NewsTopAppBarForMultiSource(onUpClicked = onUpClicked) },
         bodyContent = { NewsBodyForMultiSource(multipleSourceViewModel = multipleSourceViewModel, onNewsClicked = onNewsClicked) }

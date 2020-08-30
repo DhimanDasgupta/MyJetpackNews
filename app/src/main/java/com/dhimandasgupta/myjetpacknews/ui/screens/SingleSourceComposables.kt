@@ -51,6 +51,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextAlign.Center
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.viewModel
 import com.dhimandasgupta.data.presentaion.ArticleUIModel
 import com.dhimandasgupta.data.presentaion.ErrorUIModel
 import com.dhimandasgupta.data.presentaion.IdleUIModel
@@ -67,15 +68,16 @@ import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
 @ExperimentalAnimationApi
 @Composable
-fun SingleSourceScreen(singleSourceViewModel: SingleSourceViewModel, onUpClicked: () -> Unit, onNewsClicked: (String) -> Unit) {
+fun SingleSourceScreen(onUpClicked: () -> Unit, onNewsClicked: (String) -> Unit) {
     MyNewsTheme {
-        ThemedSingleSourceScreen(singleSourceViewModel = singleSourceViewModel, onUpClicked = onUpClicked, onNewsClicked = onNewsClicked)
+        ThemedSingleSourceScreen(onUpClicked = onUpClicked, onNewsClicked = onNewsClicked)
     }
 }
 
 @ExperimentalAnimationApi
 @Composable
-fun ThemedSingleSourceScreen(singleSourceViewModel: SingleSourceViewModel, onUpClicked: () -> Unit, onNewsClicked: (String) -> Unit) {
+fun ThemedSingleSourceScreen(onUpClicked: () -> Unit, onNewsClicked: (String) -> Unit) {
+    val singleSourceViewModel: SingleSourceViewModel = viewModel()
     val newsUiState = singleSourceViewModel.newsUiState.observeAsState(initial = initialNewsUiState)
 
     Scaffold(
