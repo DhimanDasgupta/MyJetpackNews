@@ -26,8 +26,8 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.IconButton
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.TopAppBar
@@ -41,6 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
@@ -58,6 +59,7 @@ import com.dhimandasgupta.myjetpacknews.R
 import com.dhimandasgupta.myjetpacknews.ui.common.MyNewsTheme
 import com.dhimandasgupta.myjetpacknews.ui.common.shapes
 import com.dhimandasgupta.myjetpacknews.viewmodel.MultipleSourceViewModel
+import com.microsoft.device.dualscreen.core.ScreenHelper
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
 @ExperimentalAnimationApi
@@ -84,6 +86,8 @@ fun ThemedMultiSourceScreen(onUpClicked: () -> Unit, onNewsClicked: (String) -> 
 
 @Composable
 fun NewsTopAppBarForMultiSource(onUpClicked: () -> Unit) {
+    val isDualScreenMode = ScreenHelper.isDualMode(ContextAmbient.current)
+
     TopAppBar {
         IconButton(
             onClick = { onUpClicked.invoke() },
@@ -100,8 +104,8 @@ fun NewsTopAppBarForMultiSource(onUpClicked: () -> Unit) {
             text = stringResource(id = R.string.multi_source_title),
             style = MaterialTheme.typography.h5,
             color = MaterialTheme.colors.onPrimary,
-            textAlign = TextAlign.Start,
-            modifier = Modifier.fillMaxSize().wrapContentSize(align = Alignment.Center)
+            textAlign = if (isDualScreenMode) TextAlign.Start else TextAlign.Center,
+            modifier = Modifier.fillMaxWidth().gravity(Alignment.CenterVertically).padding(8.dp)
         )
     }
 }
@@ -131,6 +135,8 @@ fun NewsBodyForMultiSource(multipleSourceViewModel: MultipleSourceViewModel, onN
 @ExperimentalAnimationApi
 @Composable
 fun NewsRowForSource(multipleSourceViewModel: MultipleSourceViewModel, source: Source, onNewsClicked: (String) -> Unit) {
+    val isDualScreenMode = ScreenHelper.isDualMode(ContextAmbient.current)
+
     Column {
         val news: MutableState<UIModels> = remember { mutableStateOf(LoadingUIModel(source)) }
 
@@ -144,8 +150,8 @@ fun NewsRowForSource(multipleSourceViewModel: MultipleSourceViewModel, source: S
             text = source.title,
             style = MaterialTheme.typography.h5,
             color = MaterialTheme.colors.onSurface,
-            textAlign = TextAlign.Right,
-            modifier = Modifier.fillMaxWidth().wrapContentSize(align = Alignment.Center)
+            textAlign = if (isDualScreenMode) TextAlign.Start else TextAlign.Center,
+            modifier = Modifier.fillMaxWidth().padding(8.dp)
         )
         Spacer(modifier = Modifier.fillMaxWidth().height(4.dp))
 
@@ -165,24 +171,26 @@ fun RenderNewsIdleState() {
 
 @Composable
 fun RenderLoadingState(source: Source) {
-    Box(modifier = Modifier.fillMaxWidth().padding(16.dp), gravity = ContentGravity.Center) {
+    val isDualScreenMode = ScreenHelper.isDualMode(ContextAmbient.current)
+
+    Box(modifier = Modifier.fillMaxWidth().padding(16.dp), gravity = Alignment.Center) {
         Column {
-            CircularProgressIndicator(
-                modifier = Modifier.gravity(Alignment.CenterHorizontally),
+            LinearProgressIndicator(
+                modifier = Modifier.gravity(if (isDualScreenMode) Alignment.Start else Alignment.CenterHorizontally).padding(8.dp),
                 color = MaterialTheme.colors.onSurface
             )
             Text(
                 text = stringResource(id = R.string.loading_text),
                 style = MaterialTheme.typography.h6,
                 color = MaterialTheme.colors.onSurface,
-                textAlign = TextAlign.Center,
+                textAlign = if (isDualScreenMode) TextAlign.Start else TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
             Text(
                 text = source.title,
                 style = MaterialTheme.typography.h3,
                 color = MaterialTheme.colors.onSurface,
-                textAlign = TextAlign.Center,
+                textAlign = if (isDualScreenMode) TextAlign.Start else TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -248,13 +256,15 @@ fun RenderEachArticle(article: ArticleUIModel, onNewsClicked: (String) -> Unit) 
 
 @Composable
 fun RenderErrorState(errorUIModel: ErrorUIModel) {
+    val isDualScreenMode = ScreenHelper.isDualMode(ContextAmbient.current)
+
     Box(modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(16.dp), gravity = ContentGravity.Center) {
         Column {
             Text(
                 text = stringResource(id = R.string.error_text),
                 style = MaterialTheme.typography.body1,
                 color = MaterialTheme.colors.error,
-                textAlign = TextAlign.Center,
+                textAlign = if (isDualScreenMode) TextAlign.Start else TextAlign.Center,
                 modifier = Modifier.fillMaxWidth().gravity(align = Alignment.CenterHorizontally)
             )
             Spacer(modifier = Modifier.preferredHeight(4.dp))
@@ -262,7 +272,7 @@ fun RenderErrorState(errorUIModel: ErrorUIModel) {
                 text = errorUIModel.source.title,
                 style = MaterialTheme.typography.h3,
                 color = MaterialTheme.colors.error,
-                textAlign = TextAlign.Center,
+                textAlign = if (isDualScreenMode) TextAlign.Start else TextAlign.Center,
                 modifier = Modifier.fillMaxWidth().gravity(align = Alignment.CenterHorizontally)
             )
             Spacer(modifier = Modifier.preferredHeight(8.dp))
@@ -273,7 +283,7 @@ fun RenderErrorState(errorUIModel: ErrorUIModel) {
                 ),
                 style = MaterialTheme.typography.h5,
                 color = MaterialTheme.colors.onSurface,
-                textAlign = TextAlign.Center,
+                textAlign = if (isDualScreenMode) TextAlign.Start else TextAlign.Center,
                 modifier = Modifier.fillMaxWidth().gravity(align = Alignment.CenterHorizontally)
             )
         }

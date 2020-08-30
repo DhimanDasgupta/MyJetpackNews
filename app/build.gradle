@@ -69,6 +69,10 @@ dependencies {
     implementation Deps.AndroidX.Compose.animationCore
     implementation Deps.AndroidX.Compose.animation
 
+    // Microsoft Duo
+    implementation Deps.MicrosoftDuo.duoCore
+    implementation Deps.MicrosoftDuo.duoLayout
+
     // Coil image for Compose
     implementation Deps.AndroidX.Accompanist.accompanistCoil
 

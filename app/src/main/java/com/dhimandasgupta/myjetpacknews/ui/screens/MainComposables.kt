@@ -9,7 +9,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.ColumnScope.gravity
 import androidx.compose.foundation.layout.ColumnScope.weight
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -24,12 +23,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ConfigurationAmbient
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextAlign.Center
+import androidx.compose.ui.text.style.TextAlign.Start
 import androidx.compose.ui.unit.dp
 import com.dhimandasgupta.myjetpacknews.R
 import com.dhimandasgupta.myjetpacknews.ui.common.MyNewsTheme
 import com.dhimandasgupta.myjetpacknews.ui.data.Page
 import com.dhimandasgupta.myjetpacknews.ui.ext.toListOfPairedPages
+import com.microsoft.device.dualscreen.core.ScreenHelper
 
 @Composable
 fun MainScreen(pages: List<Page>) {
@@ -43,13 +44,15 @@ fun MainScreen(pages: List<Page>) {
 
 @Composable
 fun MainTopAppBar() {
+    val isDualScreenMode = ScreenHelper.isDualMode(ContextAmbient.current)
+
     TopAppBar {
         Text(
             text = stringResource(id = R.string.app_name),
             style = MaterialTheme.typography.h5,
             color = MaterialTheme.colors.onPrimary,
-            textAlign = TextAlign.Right,
-            modifier = Modifier.fillMaxSize().wrapContentSize(align = Alignment.Center)
+            textAlign = if (isDualScreenMode) Start else Center,
+            modifier = Modifier.fillMaxWidth().gravity(Alignment.CenterVertically).padding(8.dp)
         )
     }
 }
@@ -108,7 +111,7 @@ fun RenderContent(page: Page, onClick: () -> Unit) {
             text = page.name,
             style = MaterialTheme.typography.h6,
             color = MaterialTheme.colors.onSurface,
-            textAlign = TextAlign.Center,
+            textAlign = Center,
             modifier = Modifier.wrapContentSize(Alignment.Center)
         )
     }

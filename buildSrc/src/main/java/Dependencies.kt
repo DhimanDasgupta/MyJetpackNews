@@ -94,4 +94,13 @@ object Deps {
             const val viewModelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
         }
     }
+
+    object MicrosoftDuo {
+        const val SDk = "https://pkgs.dev.azure.com/MicrosoftDeviceSDK/DuoSDK-Public/_packaging/Duo-SDK-Feed/maven/v1"
+
+        private const val dualScreenLayoutVersion = "1.0.0-alpha01"
+
+        const val duoCore = "com.microsoft.device.dualscreen:core:$dualScreenLayoutVersion"
+        const val duoLayout = "com.microsoft.device.dualscreen:layouts:1.0.0-alpha02" // Not equal with core
+    }
 }

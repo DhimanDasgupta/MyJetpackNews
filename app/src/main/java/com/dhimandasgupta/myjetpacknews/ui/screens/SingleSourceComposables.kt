@@ -45,10 +45,11 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ConfigurationAmbient
+import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextAlign.Center
+import androidx.compose.ui.text.style.TextAlign.Start
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
@@ -64,6 +65,7 @@ import com.dhimandasgupta.myjetpacknews.R
 import com.dhimandasgupta.myjetpacknews.ui.common.MyNewsTheme
 import com.dhimandasgupta.myjetpacknews.ui.common.shapes
 import com.dhimandasgupta.myjetpacknews.viewmodel.SingleSourceViewModel
+import com.microsoft.device.dualscreen.core.ScreenHelper
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
 @ExperimentalAnimationApi
@@ -101,6 +103,8 @@ fun ThemedSingleSourceScreen(onUpClicked: () -> Unit, onNewsClicked: (String) ->
 
 @Composable
 fun NewsTopAppBar(source: Source, onUpClicked: () -> Unit) {
+    val isDualScreenMode = ScreenHelper.isDualMode(ContextAmbient.current)
+
     TopAppBar {
         IconButton(
             onClick = { onUpClicked.invoke() },
@@ -111,8 +115,8 @@ fun NewsTopAppBar(source: Source, onUpClicked: () -> Unit) {
             text = stringResource(id = R.string.news_from, formatArgs = arrayOf(source.title)),
             style = typography.h5,
             color = colors.onPrimary,
-            textAlign = TextAlign.Right,
-            modifier = Modifier.fillMaxSize().wrapContentSize(align = Alignment.Center)
+            textAlign = if (isDualScreenMode) Start else Center,
+            modifier = Modifier.fillMaxWidth().gravity(CenterVertically).padding(8.dp)
         )
     }
 }
@@ -125,7 +129,12 @@ fun NewsBody(uiModels: UIModels, sources: List<Source>, onNewsClicked: (String) 
         backgroundColor = colors.surface,
     ) {
         val isLandscape = ConfigurationAmbient.current.orientation == ORIENTATION_LANDSCAPE
-        val leftSourcesWeight = if (isLandscape) 0.3f else 0.0f
+        val isDualScreenMode = ScreenHelper.isDualMode(ContextAmbient.current)
+        val leftSourcesWeight = when {
+            isLandscape && isDualScreenMode -> 0.5f
+            isLandscape -> 0.3f
+            else -> 0.0f
+        }
 
         Row(modifier = Modifier.fillMaxWidth()) {
             if (isLandscape) {
@@ -310,6 +319,7 @@ fun RenderError(errorUIModel: ErrorUIModel) {
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
 fun NewsBottomAppBar(sources: List<Source>, onSourceSelected: (Source) -> Unit) {
     if (ConfigurationAmbient.current.orientation == ORIENTATION_PORTRAIT) {
@@ -327,42 +337,52 @@ fun NewsBottomAppBar(sources: List<Source>, onSourceSelected: (Source) -> Unit) 
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
 fun BottomAppBarItem(source: Source, onSourceSelected: (Source) -> Unit) {
     val isLandscape = ConfigurationAmbient.current.orientation == ORIENTATION_LANDSCAPE
     val textColor = if (isLandscape) colors.onSurface else colors.onPrimary
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-            .clickable(
-                enabled = true,
-                indication = RippleIndication(bounded = true),
-                onClick = { onSourceSelected.invoke(source) }
-            )
+    val isDualScreenMode = ScreenHelper.isDualMode(ContextAmbient.current)
+
+    AnimatedVisibility(
+        initiallyVisible = false,
+        visible = true,
+        enter = slideInHorizontally(initialOffsetX = { it }),
+        exit = slideOutHorizontally(targetOffsetX = { it }),
     ) {
-        if (source.selected) {
-            Box(
-                modifier = Modifier.width(32.dp).height(2.dp)
-                    .gravity(align = CenterHorizontally),
-                shape = shapes.medium,
-                backgroundColor = textColor
+        Column(
+            modifier = Modifier.fillMaxSize()
+                .clickable(
+                    enabled = true,
+                    indication = RippleIndication(bounded = true),
+                    onClick = { onSourceSelected.invoke(source) }
+                )
+        ) {
+            if (source.selected) {
+                Box(
+                    modifier = Modifier.width(if (isDualScreenMode) 128.dp else 32.dp).height(2.dp)
+                        .gravity(align = CenterHorizontally),
+                    shape = shapes.medium,
+                    backgroundColor = textColor
+                )
+            }
+            Text(
+                text = source.title,
+                style = if (source.selected) typography.h5 else typography.h6,
+                color = textColor,
+                textAlign = if (isDualScreenMode) Center else Start,
+                textDecoration = if (source.selected) TextDecoration.None else TextDecoration.LineThrough,
+                modifier = Modifier.fillMaxWidth().padding(8.dp)
             )
-        }
-        Text(
-            text = source.title,
-            style = if (source.selected) typography.h5 else typography.h6,
-            color = textColor,
-            textAlign = Center,
-            textDecoration = if (source.selected) TextDecoration.None else TextDecoration.LineThrough,
-            modifier = Modifier.wrapContentSize().padding(8.dp)
-        )
-        if (source.selected) {
-            Box(
-                modifier = Modifier.width(64.dp).height(2.dp)
-                    .gravity(align = CenterHorizontally),
-                shape = shapes.medium,
-                backgroundColor = textColor
-            )
+            if (source.selected) {
+                Box(
+                    modifier = Modifier.width(if (isDualScreenMode) 156.dp else 32.dp).height(2.dp)
+                        .gravity(align = CenterHorizontally),
+                    shape = shapes.medium,
+                    backgroundColor = textColor
+                )
+            }
         }
     }
 }
