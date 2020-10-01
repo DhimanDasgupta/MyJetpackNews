@@ -13,7 +13,6 @@ import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope.weight
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -108,7 +107,7 @@ fun NewsTopAppBar(source: Source, onUpClicked: () -> Unit) {
     TopAppBar {
         IconButton(
             onClick = { onUpClicked.invoke() },
-            modifier = Modifier.wrapContentSize(align = Alignment.Center).gravity(align = CenterVertically),
+            modifier = Modifier.wrapContentSize(align = Alignment.Center).align(CenterVertically),
             icon = { Icon(asset = vectorResource(id = R.drawable.ic_arrow_back), tint = colors.onPrimary) }
         )
         Text(
@@ -116,7 +115,7 @@ fun NewsTopAppBar(source: Source, onUpClicked: () -> Unit) {
             style = typography.h5,
             color = colors.onPrimary,
             textAlign = if (isDualScreenMode) Start else Center,
-            modifier = Modifier.fillMaxWidth().gravity(CenterVertically).padding(8.dp)
+            modifier = Modifier.fillMaxWidth().align(CenterVertically).padding(8.dp)
         )
     }
 }
@@ -125,7 +124,7 @@ fun NewsTopAppBar(source: Source, onUpClicked: () -> Unit) {
 @Composable
 fun NewsBody(uiModels: UIModels, sources: List<Source>, onNewsClicked: (String) -> Unit, onSourceSelected: (Source) -> Unit) {
     Box(
-        Modifier.weight(1f, false),
+        Modifier.fillMaxSize(1f),
         backgroundColor = colors.surface,
     ) {
         val isLandscape = ConfigurationAmbient.current.orientation == ORIENTATION_LANDSCAPE
@@ -217,7 +216,7 @@ fun RenderLoading(source: Source) {
 fun RenderArticles(articles: List<ArticleUIModel>, onNewsClicked: (String) -> Unit) {
     LazyColumnFor(
         items = articles,
-        modifier = Modifier.weight(1f, true)
+        modifier = Modifier.fillMaxSize(1f)
     ) {
         RenderArticle(article = it, onNewsClicked)
     }

@@ -3,12 +3,10 @@ package com.dhimandasgupta.myjetpacknews.ui.screens
 import android.content.Intent
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import androidx.compose.foundation.Box
-import androidx.compose.foundation.ContentGravity
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.ColumnScope.gravity
-import androidx.compose.foundation.layout.ColumnScope.weight
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -52,7 +50,7 @@ fun MainTopAppBar() {
             style = MaterialTheme.typography.h5,
             color = MaterialTheme.colors.onPrimary,
             textAlign = if (isDualScreenMode) Start else Center,
-            modifier = Modifier.fillMaxWidth().gravity(Alignment.CenterVertically).padding(8.dp)
+            modifier = Modifier.fillMaxWidth().align(Alignment.CenterVertically).padding(8.dp)
         )
     }
 }
@@ -100,12 +98,12 @@ fun RenderPortraitContent(pages: List<Page>) {
 @Composable
 fun RenderContent(page: Page, onClick: () -> Unit) {
     Box(
-        modifier = Modifier.fillMaxWidth().weight(1f, true).gravity(Alignment.CenterHorizontally).padding(8.dp).clickable(
+        modifier = Modifier.fillMaxSize(1f).padding(8.dp).clickable(
             enabled = true,
             indication = RippleIndication(),
             onClick = { onClick.invoke() }
         ),
-        gravity = ContentGravity.Center
+        gravity = Alignment.Center
     ) {
         Text(
             text = page.name,

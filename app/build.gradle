@@ -62,7 +62,7 @@ dependencies {
     implementation Deps.AndroidX.Compose.runtime
     implementation Deps.AndroidX.Compose.foundation
     implementation Deps.AndroidX.Compose.material
-    implementation Deps.AndroidX.Compose.composer
+    // implementation Deps.AndroidX.Compose.composer
     implementation Deps.AndroidX.Compose.tooling
     implementation Deps.AndroidX.Compose.savedInstanceState
     implementation Deps.AndroidX.Compose.liveData
