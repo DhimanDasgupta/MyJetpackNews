@@ -252,7 +252,7 @@ fun RenderArticle(article: ArticleUIModel, onNewsClicked: (String) -> Unit) {
                                 .preferredSize(8.dp)
                         )
                         CoilImageWithCrossfade(
-                            data = article.urlToImage,
+                            data = article.imageUrl,
                             modifier = Modifier.preferredSize(100.dp)
                         )
                         Column(modifier = Modifier.padding(8.dp)) {

@@ -16,7 +16,7 @@ fun NetworkResponse.toDomainModel(): NewsDomainModel {
                     title = articleNetworkModel.title ?: "",
                     description = articleNetworkModel.description ?: "",
                     url = articleNetworkModel.url ?: "",
-                    urlToImage = articleNetworkModel.urlToImage ?: "",
+                    imageUrl = articleNetworkModel.urlToImage ?: "",
                     publishedAt = articleNetworkModel.publishedAt ?: "",
                     content = articleNetworkModel.content ?: ""
                 )

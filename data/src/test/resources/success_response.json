@@ -1,0 +1,19 @@
+{
+  "status": "ok",
+  "totalResults": 3676,
+  "articles": [
+    {
+      "source": {
+        "id": "some_id",
+        "name": "some name"
+      },
+      "author": "some author",
+      "title": "some title",
+      "description": "some description.",
+      "url": "https://someurl",
+      "urlToImage": "https://some_image.jpeg",
+      "publishedAt": "2020-10-28T17:04:08Z",
+      "content": "some content"
+    }
+  ]
+}

@@ -13,7 +13,7 @@ data class ArticleDomainModel(
     val title: String,
     val description: String,
     val url: String,
-    val urlToImage: String,
+    val imageUrl: String,
     val publishedAt: String,
     val content: String
 )

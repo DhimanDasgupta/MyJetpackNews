@@ -20,6 +20,12 @@ dependencies {
     implementation Deps.Kotlin.Coroutine.coroutineAndroid
 
     // Retrofit
+    api Deps.Okhttp.okhttp
     api Deps.Retrofit.retrofit
     api Deps.Retrofit.converter
+
+    // Testing dependencies
+    testImplementation Deps.Okhttp.mockWebServer
+    testImplementation Deps.Kotlin.Coroutine.coroutineTest
+    testImplementation Deps.Kotlin.MockK.mockk
 }

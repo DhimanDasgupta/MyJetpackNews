@@ -32,7 +32,7 @@ data class Article(
 
 data class Source(
     @SerializedName("id")
-    val id: Any,
+    val id: String?,
     @SerializedName("name")
     val name: String?
 )

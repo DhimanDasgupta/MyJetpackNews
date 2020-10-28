@@ -15,7 +15,7 @@ object Versions {
 }
 
 object Deps {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha13"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha15"
     const val kotlinGradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Kotlin.version}"
     const val hiltGradlePlugin = "com.google.dagger:hilt-android-gradle-plugin:${Hilt.version}"
 
@@ -28,11 +28,25 @@ object Deps {
         const val compilerVersion = "1.4.0-dev-withExperimentalGoogleExtensions-20200720"
 
         object Coroutine {
-            private const val version = "1.3.9"
+            private const val version = "1.4.0"
 
             const val coroutineCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
             const val coroutineAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
+            const val coroutineTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
         }
+
+        object MockK {
+            private const val version = "1.10.2"
+
+            const val mockk = "io.mockk:mockk:$version"
+        }
+    }
+
+    object Okhttp {
+        private const val version = "4.9.0"
+
+        const val okhttp = "com.squareup.okhttp3:okhttp:$version"
+        const val mockWebServer = "com.squareup.okhttp3:mockwebserver:$version"
     }
 
     object Retrofit {
@@ -66,7 +80,7 @@ object Deps {
         const val material = "com.google.android.material:material:$androidXVersion"
 
         object Compose {
-            private const val version = "1.0.0-alpha04"
+            private const val version = "1.0.0-alpha06"
 
             const val ui = "androidx.compose.ui:ui:$version"
             const val runtime = "androidx.compose.runtime:runtime:$version"
@@ -81,7 +95,7 @@ object Deps {
         }
 
         object Accompanist {
-            private const val version = "0.3.0"
+            private const val version = "0.3.2"
 
             const val accompanistCoil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
             const val accompanistMdc = "dev.chrisbanes.accompanist:accompanist-mdc-theme:$version"

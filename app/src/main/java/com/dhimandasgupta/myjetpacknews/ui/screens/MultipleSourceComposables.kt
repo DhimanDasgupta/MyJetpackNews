@@ -231,7 +231,7 @@ fun RenderEachArticle(article: ArticleUIModel, onNewsClicked: (String) -> Unit) 
             ) {
                 Stack(modifier = Modifier.fillMaxSize()) {
                     CoilImageWithCrossfade(
-                        data = article.urlToImage,
+                        data = article.imageUrl,
                         modifier = Modifier.size(cardSize),
                         contentScale = ContentScale.Crop
                     )

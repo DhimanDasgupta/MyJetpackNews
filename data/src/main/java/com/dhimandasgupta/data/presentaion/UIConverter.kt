@@ -16,7 +16,7 @@ fun NewsDomainModel.toUIModel(): UIModels {
                 title = articleDomainModel.title,
                 description = articleDomainModel.description,
                 url = articleDomainModel.url,
-                urlToImage = articleDomainModel.urlToImage,
+                imageUrl = articleDomainModel.imageUrl,
                 publishedAt = articleDomainModel.publishedAt,
                 content = articleDomainModel.content
             )
