@@ -1,12 +1,12 @@
 package com.dhimandasgupta.data.domain
 
-class NewsUseCase(private val repository: NewsRepository) : BaseNewsUseCase {
+class NewsUseCaseImpl(private val repository: NewsRepository) : NewsUseCase {
     override suspend fun getEverythingByQuery(params: Params): NewsDomainModel {
         return repository.getEverythingByQuery(params.query)
     }
 }
 
-interface BaseNewsUseCase {
+interface NewsUseCase {
     suspend fun getEverythingByQuery(params: Params): NewsDomainModel
 }
 

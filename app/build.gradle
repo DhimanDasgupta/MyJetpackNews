@@ -85,6 +85,11 @@ dependencies {
     kapt Deps.Hilt.kapt
     implementation Deps.HiltAndroid.viewModel
     kapt Deps.HiltAndroid.kapt
+
+    // Testing dependencies
+    testImplementation Deps.AndroidX.AndroidXCoreTesting
+    testImplementation Deps.Kotlin.Coroutine.coroutineTest
+    testImplementation Deps.Kotlin.MockK.mockk
 }
 
 kapt {

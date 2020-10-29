@@ -107,6 +107,8 @@ object Deps {
             const val runtimeKtx = "androidx.lifecycle:lifecycle-runtime-ktx:$version"
             const val viewModelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
         }
+
+        const val AndroidXCoreTesting = "androidx.arch.core:core-testing:2.1.0"
     }
 
     object MicrosoftDuo {

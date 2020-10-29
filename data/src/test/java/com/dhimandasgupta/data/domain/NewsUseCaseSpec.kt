@@ -24,7 +24,7 @@ class NewsUseCaseSpec {
     @Before
     fun init() {
         MockKAnnotations.init(this)
-        newsUseCase = NewsUseCase(newsRepository)
+        newsUseCase = NewsUseCaseImpl(newsRepository)
     }
 
     @Test

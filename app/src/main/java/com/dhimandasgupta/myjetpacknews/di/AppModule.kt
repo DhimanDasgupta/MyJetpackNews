@@ -5,6 +5,7 @@ import com.dhimandasgupta.data.data.NewsServiceImpl
 import com.dhimandasgupta.data.data.api.NewsApi
 import com.dhimandasgupta.data.data.api.NewsRequestHeaderInterceptor
 import com.dhimandasgupta.data.domain.NewsUseCase
+import com.dhimandasgupta.data.domain.NewsUseCaseImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -71,5 +72,5 @@ class ActivityModule {
     fun provideNewsRepository(newsService: NewsServiceImpl): NewsRepositoryImpl = NewsRepositoryImpl(newsService)
 
     @Provides
-    fun provideNewsUseCase(newsRepository: NewsRepositoryImpl): NewsUseCase = NewsUseCase(newsRepository)
+    fun provideNewsUseCase(newsRepository: NewsRepositoryImpl): NewsUseCase = NewsUseCaseImpl(newsRepository)
 }

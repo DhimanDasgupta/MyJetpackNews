@@ -14,6 +14,7 @@ import com.dhimandasgupta.data.presentaion.Source
 import com.dhimandasgupta.data.presentaion.initialNewsUiState
 import com.dhimandasgupta.data.presentaion.mapSource
 import com.dhimandasgupta.data.presentaion.toUIModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.lang.Exception
@@ -40,7 +41,7 @@ class SingleSourceViewModel @ViewModelInject constructor(
         val currentSource = newSources.first { s: Source -> s.selected }
 
         currentJob?.cancel()
-        currentJob = viewModelScope.launch {
+        currentJob = viewModelScope.launch(Dispatchers.IO) {
             kotlin.runCatching {
                 newsUiStateMutableLiveData.postValue(
                     newsUiStateMutableLiveData.value?.copy(
