@@ -11,6 +11,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityRetainedComponent
 import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.scopes.ActivityRetainedScoped
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Converter
@@ -66,11 +67,14 @@ class AppModule {
 @InstallIn(ActivityRetainedComponent::class)
 class ActivityModule {
     @Provides
+    @ActivityRetainedScoped
     fun provideNewsService(newsApi: NewsApi): NewsServiceImpl = NewsServiceImpl(newsApi)
 
     @Provides
+    @ActivityRetainedScoped
     fun provideNewsRepository(newsService: NewsServiceImpl): NewsRepositoryImpl = NewsRepositoryImpl(newsService)
 
     @Provides
+    @ActivityRetainedScoped
     fun provideNewsUseCase(newsRepository: NewsRepositoryImpl): NewsUseCase = NewsUseCaseImpl(newsRepository)
 }

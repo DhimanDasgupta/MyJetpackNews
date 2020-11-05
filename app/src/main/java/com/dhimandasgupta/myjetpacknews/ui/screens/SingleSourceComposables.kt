@@ -7,11 +7,10 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.Box
-import androidx.compose.foundation.ContentGravity
-import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,6 +30,7 @@ import androidx.compose.foundation.lazy.LazyRowFor
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.MaterialTheme.typography
@@ -39,16 +39,16 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.ripple.RippleIndication
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.Alignment.Companion.TopStart
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ConfigurationAmbient
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.style.TextAlign.Center
-import androidx.compose.ui.text.style.TextAlign.Start
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
@@ -65,67 +65,114 @@ import com.dhimandasgupta.myjetpacknews.ui.common.MyNewsTheme
 import com.dhimandasgupta.myjetpacknews.ui.common.shapes
 import com.dhimandasgupta.myjetpacknews.viewmodel.SingleSourceViewModel
 import com.microsoft.device.dualscreen.core.ScreenHelper
-import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
+import dev.chrisbanes.accompanist.coil.CoilImage
 
 @ExperimentalAnimationApi
 @Composable
-fun SingleSourceScreen(onUpClicked: () -> Unit, onNewsClicked: (String) -> Unit) {
+fun SingleSourceScreen(
+    onUpClicked: () -> Unit,
+    onNewsClicked: (String) -> Unit
+) {
     MyNewsTheme {
-        ThemedSingleSourceScreen(onUpClicked = onUpClicked, onNewsClicked = onNewsClicked)
+        ThemedSingleSourceScreen(
+            onUpClicked = onUpClicked,
+            onNewsClicked = onNewsClicked
+        )
     }
 }
 
 @ExperimentalAnimationApi
 @Composable
-fun ThemedSingleSourceScreen(onUpClicked: () -> Unit, onNewsClicked: (String) -> Unit) {
+fun ThemedSingleSourceScreen(
+    onUpClicked: () -> Unit,
+    onNewsClicked: (String) -> Unit
+) {
     val singleSourceViewModel: SingleSourceViewModel = viewModel()
-    val newsUiState = singleSourceViewModel.newsUiState.observeAsState(initial = initialNewsUiState)
+    val newsUiState = singleSourceViewModel
+        .newsUiState
+        .observeAsState(initial = initialNewsUiState)
 
     Scaffold(
-        topBar = { NewsTopAppBar(source = newsUiState.value.currentSource, onUpClicked = onUpClicked) },
+        topBar = {
+            NewsTopAppBar(
+                source = newsUiState.value.currentSource,
+                onUpClicked = onUpClicked
+            )
+        },
         bodyContent = {
             NewsBody(
                 uiModels = newsUiState.value.uiModels,
                 sources = newsUiState.value.allSources,
                 onNewsClicked = onNewsClicked
             ) { source ->
-                if (!source.selected) singleSourceViewModel.fetchNewsFromSource(source = source)
+                if (!source.selected) singleSourceViewModel.fetchNewsFromSource(
+                    source = source
+                )
             }
         },
         bottomBar = {
-            NewsBottomAppBar(sources = newsUiState.value.allSources) { source ->
-                if (!source.selected) singleSourceViewModel.fetchNewsFromSource(source = source)
+            NewsBottomAppBar(
+                sources = newsUiState.value.allSources
+            ) { source ->
+                if (!source.selected) singleSourceViewModel.fetchNewsFromSource(
+                    source = source
+                )
             }
         },
     )
 }
 
 @Composable
-fun NewsTopAppBar(source: Source, onUpClicked: () -> Unit) {
+fun NewsTopAppBar(
+    source: Source,
+    onUpClicked: () -> Unit
+) {
     val isDualScreenMode = ScreenHelper.isDualMode(ContextAmbient.current)
 
     TopAppBar {
         IconButton(
             onClick = { onUpClicked.invoke() },
-            modifier = Modifier.wrapContentSize(align = Alignment.Center).align(CenterVertically),
-            icon = { Icon(asset = vectorResource(id = R.drawable.ic_arrow_back), tint = colors.onPrimary) }
+            modifier = Modifier
+                .wrapContentSize(align = Center)
+                .align(CenterVertically),
+            icon = {
+                Icon(
+                    asset = vectorResource(R.drawable.ic_arrow_back),
+                    tint = colors.onPrimary,
+                    modifier = Modifier.preferredSize(48.dp)
+                )
+            }
         )
+
         Text(
-            text = stringResource(id = R.string.news_from, formatArgs = arrayOf(source.title)),
+            text = stringResource(
+                id = R.string.news_from,
+                formatArgs = arrayOf(source.title)
+            ),
             style = typography.h5,
             color = colors.onPrimary,
-            textAlign = if (isDualScreenMode) Start else Center,
-            modifier = Modifier.fillMaxWidth().align(CenterVertically).padding(8.dp)
+            textAlign = if (isDualScreenMode) TextAlign.Start else TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(CenterVertically)
+                .padding(8.dp),
         )
     }
 }
 
 @ExperimentalAnimationApi
 @Composable
-fun NewsBody(uiModels: UIModels, sources: List<Source>, onNewsClicked: (String) -> Unit, onSourceSelected: (Source) -> Unit) {
+fun NewsBody(
+    uiModels: UIModels,
+    sources: List<Source>,
+    onNewsClicked: (String) -> Unit,
+    onSourceSelected: (Source) -> Unit
+) {
     Box(
-        Modifier.fillMaxSize(1f),
-        backgroundColor = colors.surface,
+        modifier = Modifier
+            .fillMaxSize(1f)
+            .background(color = colors.surface),
+        alignment = TopStart
     ) {
         val isLandscape = ConfigurationAmbient.current.orientation == ORIENTATION_LANDSCAPE
         val isDualScreenMode = ScreenHelper.isDualMode(ContextAmbient.current)
@@ -135,7 +182,9 @@ fun NewsBody(uiModels: UIModels, sources: List<Source>, onNewsClicked: (String) 
             else -> 0.0f
         }
 
-        Row(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth()
+        ) {
             if (isLandscape) {
                 LazyColumnFor(
                     items = sources,
@@ -150,7 +199,10 @@ fun NewsBody(uiModels: UIModels, sources: List<Source>, onNewsClicked: (String) 
                 }
             }
 
-            Box(modifier = Modifier.weight(1f - leftSourcesWeight, true)) {
+            Box(
+                modifier = Modifier
+                    .weight(1f - leftSourcesWeight, true)
+            ) {
                 NewsContainer(uiModels = uiModels, onNewsClicked)
             }
         }
@@ -159,53 +211,81 @@ fun NewsBody(uiModels: UIModels, sources: List<Source>, onNewsClicked: (String) 
 
 @ExperimentalAnimationApi
 @Composable
-fun NewsContainer(uiModels: UIModels, onNewsClicked: (String) -> Unit) {
-    Crossfade(current = uiModels) {
+fun NewsContainer(
+    uiModels: UIModels,
+    onNewsClicked: (String) -> Unit
+) {
+    Crossfade(
+        current = uiModels
+    ) {
         when (uiModels) {
             is IdleUIModel -> RenderIdle()
-            is LoadingUIModel -> RenderLoading(source = uiModels.source)
-            is SuccessUIModel -> RenderArticles(articles = uiModels.articlesUIModel.articles, onNewsClicked)
-            is ErrorUIModel -> RenderError(errorUIModel = uiModels)
+            is LoadingUIModel -> RenderLoading(
+                source = uiModels.source
+            )
+            is SuccessUIModel -> RenderArticles(
+                articles = uiModels.articlesUIModel.articles, onNewsClicked
+            )
+            is ErrorUIModel -> RenderError(
+                errorUIModel = uiModels
+            )
         }
     }
 }
 
 @Composable
 fun RenderIdle() {
-    Box(modifier = Modifier.fillMaxSize(), gravity = ContentGravity.Center) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize(),
+        alignment = Center
+    ) {
         Column {
-            CircularProgressIndicator(modifier = Modifier.gravity(CenterHorizontally))
+            CircularProgressIndicator(
+                modifier = Modifier.align(CenterHorizontally)
+            )
             Text(
                 text = stringResource(id = R.string.idle_text),
                 style = typography.h6,
                 color = colors.onSurface,
-                modifier = Modifier.wrapContentWidth(CenterHorizontally)
+                modifier = Modifier
+                    .wrapContentWidth(CenterHorizontally)
             )
         }
     }
 }
 
 @Composable
-fun RenderLoading(source: Source) {
-    Box(modifier = Modifier.fillMaxSize().padding(16.dp), gravity = ContentGravity.Center) {
+fun RenderLoading(
+    source: Source
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        alignment = Center
+    ) {
         Column {
             CircularProgressIndicator(
-                modifier = Modifier.gravity(CenterHorizontally),
+                modifier = Modifier
+                    .align(CenterHorizontally),
                 color = colors.onSurface
             )
             Text(
                 text = stringResource(id = R.string.loading_text),
                 style = typography.h6,
                 color = colors.onSurface,
-                textAlign = Center,
-                modifier = Modifier.fillMaxWidth()
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
             )
             Text(
                 text = source.title,
                 style = typography.h3,
                 color = colors.onSurface,
-                textAlign = Center,
-                modifier = Modifier.fillMaxWidth()
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth(),
             )
         }
     }
@@ -213,67 +293,99 @@ fun RenderLoading(source: Source) {
 
 @ExperimentalAnimationApi
 @Composable
-fun RenderArticles(articles: List<ArticleUIModel>, onNewsClicked: (String) -> Unit) {
+fun RenderArticles(
+    articles: List<ArticleUIModel>,
+    onNewsClicked: (String) -> Unit
+) {
     LazyColumnFor(
         items = articles,
-        modifier = Modifier.fillMaxSize(1f)
+        modifier = Modifier
+            .fillMaxSize(1f)
     ) {
-        RenderArticle(article = it, onNewsClicked)
+        RenderArticle(
+            article = it,
+            onNewsClicked = onNewsClicked
+        )
     }
 }
 
 @ExperimentalAnimationApi
 @Composable
-fun RenderArticle(article: ArticleUIModel, onNewsClicked: (String) -> Unit) {
+fun RenderArticle(
+    article: ArticleUIModel,
+    onNewsClicked: (String) -> Unit
+) {
     AnimatedVisibility(
         initiallyVisible = false,
         visible = true,
         enter = slideInHorizontally(initialOffsetX = { it }),
         exit = slideOutHorizontally(targetOffsetX = { it }),
     ) {
-        Box(modifier = Modifier.fillMaxSize().padding(8.dp)) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp)
+        ) {
             Card(
                 shape = shapes.medium,
                 elevation = 8.dp,
                 contentColor = colors.surface,
-                modifier = Modifier.fillMaxWidth().clickable(
-                    enabled = true,
-                    indication = RippleIndication(bounded = true),
-                    onClick = { onNewsClicked.invoke(article.url) }
-                )
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(
+                        enabled = true,
+                        indication = RippleIndication(bounded = true),
+                        onClick = { onNewsClicked.invoke(article.url) }
+                    )
             ) {
                 Column {
                     Spacer(
-                        modifier = Modifier.wrapContentWidth().wrapContentHeight().preferredSize(8.dp)
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .wrapContentHeight()
+                            .preferredSize(8.dp)
                     )
                     Row {
                         Spacer(
-                            modifier = Modifier.wrapContentWidth().wrapContentHeight()
+                            modifier = Modifier
+                                .wrapContentWidth()
+                                .wrapContentHeight()
                                 .preferredSize(8.dp)
                         )
-                        CoilImageWithCrossfade(
+                        CoilImage(
                             data = article.imageUrl,
-                            modifier = Modifier.preferredSize(100.dp)
+                            modifier = Modifier
+                                .preferredSize(100.dp),
+                            fadeIn = true,
                         )
-                        Column(modifier = Modifier.padding(8.dp)) {
+                        Column(
+                            modifier = Modifier
+                                .padding(8.dp)
+                        ) {
                             Text(
                                 text = article.title,
                                 style = typography.h6,
                                 color = colors.onSurface,
-                                modifier = Modifier.padding(bottom = 4.dp)
+                                modifier = Modifier
+                                    .padding(bottom = 4.dp)
                             )
                             Spacer(
-                                modifier = Modifier.wrapContentWidth().wrapContentHeight()
+                                modifier = Modifier
+                                    .wrapContentWidth()
+                                    .wrapContentHeight()
                                     .preferredSize(4.dp)
                             )
                             Text(
                                 text = article.description,
                                 style = typography.body1,
                                 color = colors.onSurface,
-                                modifier = Modifier.padding(top = 4.dp)
+                                modifier = Modifier
+                                    .padding(top = 4.dp)
                             )
                             Spacer(
-                                modifier = Modifier.wrapContentWidth().wrapContentHeight()
+                                modifier = Modifier
+                                    .wrapContentWidth()
+                                    .wrapContentHeight()
                                     .preferredSize(4.dp)
                             )
                         }
@@ -285,25 +397,43 @@ fun RenderArticle(article: ArticleUIModel, onNewsClicked: (String) -> Unit) {
 }
 
 @Composable
-fun RenderError(errorUIModel: ErrorUIModel) {
-    Box(modifier = Modifier.fillMaxSize().padding(16.dp), gravity = ContentGravity.Center) {
+fun RenderError(
+    errorUIModel: ErrorUIModel
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        alignment = Center
+    ) {
         Column {
             Text(
                 text = stringResource(id = R.string.error_text),
                 style = typography.body1,
                 color = colors.error,
-                textAlign = Center,
-                modifier = Modifier.fillMaxWidth().gravity(align = CenterHorizontally)
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(alignment = CenterHorizontally)
             )
-            Spacer(modifier = Modifier.preferredHeight(4.dp))
+
+            Spacer(
+                modifier = Modifier
+                    .preferredHeight(4.dp)
+            )
             Text(
                 text = errorUIModel.source.title,
                 style = typography.h3,
                 color = colors.error,
-                textAlign = Center,
-                modifier = Modifier.fillMaxWidth().gravity(align = CenterHorizontally)
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(alignment = CenterHorizontally)
             )
-            Spacer(modifier = Modifier.preferredHeight(8.dp))
+            Spacer(
+                modifier = Modifier
+                    .preferredHeight(8.dp)
+            )
             Text(
                 text = stringResource(
                     id = R.string.error_due_to,
@@ -311,8 +441,10 @@ fun RenderError(errorUIModel: ErrorUIModel) {
                 ),
                 style = typography.h5,
                 color = colors.error,
-                textAlign = Center,
-                modifier = Modifier.fillMaxWidth().gravity(align = CenterHorizontally)
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(alignment = CenterHorizontally)
             )
         }
     }
@@ -322,10 +454,14 @@ fun RenderError(errorUIModel: ErrorUIModel) {
 @Composable
 fun NewsBottomAppBar(sources: List<Source>, onSourceSelected: (Source) -> Unit) {
     if (ConfigurationAmbient.current.orientation == ORIENTATION_PORTRAIT) {
-        BottomAppBar(modifier = Modifier.wrapContentHeight(align = CenterVertically)) {
+        BottomAppBar(
+            modifier = Modifier
+                .wrapContentHeight(align = CenterVertically)
+        ) {
             LazyRowFor(
                 items = sources,
-                modifier = Modifier.fillMaxHeight()
+                modifier = Modifier
+                    .fillMaxHeight()
             ) {
                 BottomAppBarItem(
                     source = it,
@@ -338,7 +474,10 @@ fun NewsBottomAppBar(sources: List<Source>, onSourceSelected: (Source) -> Unit) 
 
 @ExperimentalAnimationApi
 @Composable
-fun BottomAppBarItem(source: Source, onSourceSelected: (Source) -> Unit) {
+fun BottomAppBarItem(
+    source: Source,
+    onSourceSelected: (Source) -> Unit
+) {
     val isLandscape = ConfigurationAmbient.current.orientation == ORIENTATION_LANDSCAPE
     val textColor = if (isLandscape) colors.onSurface else colors.onPrimary
 
@@ -351,7 +490,8 @@ fun BottomAppBarItem(source: Source, onSourceSelected: (Source) -> Unit) {
         exit = slideOutHorizontally(targetOffsetX = { it }),
     ) {
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .clickable(
                     enabled = true,
                     indication = RippleIndication(bounded = true),
@@ -360,26 +500,30 @@ fun BottomAppBarItem(source: Source, onSourceSelected: (Source) -> Unit) {
         ) {
             if (source.selected) {
                 Box(
-                    modifier = Modifier.width(if (isDualScreenMode) 128.dp else 32.dp).height(2.dp)
-                        .gravity(align = CenterHorizontally),
-                    shape = shapes.medium,
-                    backgroundColor = textColor
+                    modifier = Modifier
+                        .width(if (isDualScreenMode) 128.dp else 32.dp)
+                        .height(2.dp)
+                        .align(alignment = CenterHorizontally)
+                        .background(color = textColor, shape = shapes.medium),
                 )
             }
             Text(
                 text = source.title,
                 style = if (source.selected) typography.h5 else typography.h6,
                 color = textColor,
-                textAlign = if (isDualScreenMode) Center else Start,
+                textAlign = if (isDualScreenMode) TextAlign.Center else TextAlign.Start,
                 textDecoration = if (source.selected) TextDecoration.None else TextDecoration.LineThrough,
-                modifier = Modifier.fillMaxWidth().padding(8.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
             )
             if (source.selected) {
                 Box(
-                    modifier = Modifier.width(if (isDualScreenMode) 156.dp else 32.dp).height(2.dp)
-                        .gravity(align = CenterHorizontally),
-                    shape = shapes.medium,
-                    backgroundColor = textColor
+                    modifier = Modifier
+                        .width(if (isDualScreenMode) 156.dp else 32.dp)
+                        .height(2.dp)
+                        .align(alignment = CenterHorizontally)
+                        .background(color = textColor, shape = shapes.medium),
                 )
             }
         }
