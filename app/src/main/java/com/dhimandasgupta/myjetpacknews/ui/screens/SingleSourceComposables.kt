@@ -7,7 +7,6 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -35,6 +34,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.ripple.RippleIndication
 import androidx.compose.runtime.Composable
@@ -504,7 +504,10 @@ fun BottomAppBarItem(
                         .width(if (isDualScreenMode) 128.dp else 32.dp)
                         .height(2.dp)
                         .align(alignment = CenterHorizontally)
-                        .background(color = textColor, shape = shapes.medium),
+                        .background(
+                            color = textColor,
+                            shape = shapes.medium
+                        ),
                 )
             }
             Text(
@@ -523,7 +526,10 @@ fun BottomAppBarItem(
                         .width(if (isDualScreenMode) 156.dp else 32.dp)
                         .height(2.dp)
                         .align(alignment = CenterHorizontally)
-                        .background(color = textColor, shape = shapes.medium),
+                        .background(
+                            color = textColor,
+                            shape = shapes.medium
+                        ),
                 )
             }
         }

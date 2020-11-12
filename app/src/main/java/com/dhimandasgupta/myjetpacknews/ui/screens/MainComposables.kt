@@ -2,7 +2,6 @@ package com.dhimandasgupta.myjetpacknews.ui.screens
 
 import android.content.Intent
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -11,7 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumnForIndexed
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.ripple.RippleIndication
 import androidx.compose.runtime.Composable
@@ -49,7 +50,7 @@ fun MainTopAppBar() {
     TopAppBar {
         Text(
             text = stringResource(id = R.string.app_name),
-            style = MaterialTheme.typography.h5,
+            style = typography.h5,
             color = MaterialTheme.colors.onPrimary,
             textAlign = if (isDualScreenMode) Start else Center,
             modifier = Modifier
@@ -125,7 +126,7 @@ fun RenderContent(page: Page, modifier: Modifier, onClick: () -> Unit) {
         children = {
             Text(
                 text = page.name,
-                style = MaterialTheme.typography.h6,
+                style = typography.h6,
                 color = MaterialTheme.colors.onSurface,
                 textAlign = Center,
                 overflow = TextOverflow.Ellipsis,

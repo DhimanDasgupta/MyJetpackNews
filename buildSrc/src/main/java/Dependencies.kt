@@ -80,7 +80,7 @@ object Deps {
         const val material = "com.google.android.material:material:$androidXVersion"
 
         object Compose {
-            private const val version = "1.0.0-alpha06"
+            private const val version = "1.0.0-alpha07"
 
             const val ui = "androidx.compose.ui:ui:$version"
             const val runtime = "androidx.compose.runtime:runtime:$version"
@@ -95,7 +95,7 @@ object Deps {
         }
 
         object Accompanist {
-            private const val version = "0.3.2"
+            private const val version = "0.3.3.1"
 
             const val accompanistCoil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
             const val accompanistMdc = "dev.chrisbanes.accompanist:accompanist-mdc-theme:$version"

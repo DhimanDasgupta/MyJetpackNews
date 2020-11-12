@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -29,12 +28,14 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.ListItem
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.MaterialTheme.colors
+import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.ripple.RippleIndication
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedTask
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -115,7 +116,7 @@ fun NewsTopAppBarForMultiSource(
             icon = {
                 Icon(
                     asset = vectorResource(R.drawable.ic_arrow_back),
-                    tint = MaterialTheme.colors.onPrimary,
+                    tint = colors.onPrimary,
                     modifier = Modifier
                         .preferredSize(48.dp)
                 )
@@ -123,8 +124,8 @@ fun NewsTopAppBarForMultiSource(
         )
         Text(
             text = stringResource(id = R.string.multi_source_title),
-            style = MaterialTheme.typography.h5,
-            color = MaterialTheme.colors.onPrimary,
+            style = typography.h5,
+            color = colors.onPrimary,
             textAlign = if (isDualScreenMode) TextAlign.Start else TextAlign.Center,
             modifier = Modifier
                 .fillMaxWidth()
@@ -147,7 +148,7 @@ fun NewsBodyForMultiSource(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colors.surface),
+            .background(color = colors.surface),
         alignment = Alignment.TopStart
     ) {
         LazyColumnFor(
@@ -177,7 +178,8 @@ fun NewsRowForSource(
     Column {
         val news: MutableState<UIModels> = remember { mutableStateOf(LoadingUIModel(source)) }
 
-        LaunchedTask(
+        LaunchedEffect(
+            subject = source,
             block = {
                 news.value = multipleSourceViewModel.fetchNewsFrom(source)
             }
@@ -189,8 +191,8 @@ fun NewsRowForSource(
         )
         Text(
             text = source.title,
-            style = MaterialTheme.typography.h5,
-            color = MaterialTheme.colors.onSurface,
+            style = typography.h5,
+            color = colors.onSurface,
             textAlign = if (isDualScreenMode) TextAlign.Start else TextAlign.Center,
             modifier = Modifier
                 .fillMaxWidth()
@@ -246,19 +248,19 @@ fun RenderLoadingState(
                 LinearProgressIndicator(
                     modifier = Modifier.align(if (isDualScreenMode) Alignment.Start else Alignment.CenterHorizontally)
                         .padding(8.dp),
-                    color = MaterialTheme.colors.onSurface
+                    color = colors.onSurface
                 )
                 Text(
                     text = stringResource(id = R.string.loading_text),
-                    style = MaterialTheme.typography.h6,
-                    color = MaterialTheme.colors.onSurface,
+                    style = typography.h6,
+                    color = colors.onSurface,
                     textAlign = if (isDualScreenMode) TextAlign.Start else TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
                     text = source.title,
-                    style = MaterialTheme.typography.h3,
-                    color = MaterialTheme.colors.onSurface,
+                    style = typography.h3,
+                    color = colors.onSurface,
                     textAlign = if (isDualScreenMode) TextAlign.Start else TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -310,7 +312,7 @@ fun RenderEachArticle(
             Card(
                 shape = shapes.medium,
                 elevation = 8.dp,
-                contentColor = MaterialTheme.colors.surface,
+                contentColor = colors.surface,
                 modifier = Modifier
                     .size(cardSize)
                     .clickable(
@@ -336,14 +338,14 @@ fun RenderEachArticle(
                             .align(alignment = Alignment.BottomCenter)
                             .width(cardSize)
                             .background(
-                                color = MaterialTheme.colors.surface.copy(alpha = 0.6f),
+                                color = colors.surface.copy(alpha = 0.6f),
                                 shape = shapes.medium.copy(topLeft = CornerSize(0.dp), topRight = CornerSize(0.dp)),
                             )
                     ) {
                         Text(
                             text = article.title,
-                            style = MaterialTheme.typography.h6,
-                            color = MaterialTheme.colors.onSurface,
+                            style = typography.h6,
+                            color = colors.onSurface,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(4.dp)
                         )
@@ -371,8 +373,8 @@ fun RenderErrorState(
             Column {
                 Text(
                     text = stringResource(id = R.string.error_text),
-                    style = MaterialTheme.typography.body1,
-                    color = MaterialTheme.colors.error,
+                    style = typography.body1,
+                    color = colors.error,
                     textAlign = if (isDualScreenMode) TextAlign.Start else TextAlign.Center,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -383,8 +385,8 @@ fun RenderErrorState(
                 )
                 Text(
                     text = errorUIModel.source.title,
-                    style = MaterialTheme.typography.h3,
-                    color = MaterialTheme.colors.error,
+                    style = typography.h3,
+                    color = colors.error,
                     textAlign = if (isDualScreenMode) TextAlign.Start else TextAlign.Center,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -398,8 +400,8 @@ fun RenderErrorState(
                         id = R.string.error_due_to,
                         formatArgs = arrayOf(errorUIModel.exception.localizedMessage)
                     ),
-                    style = MaterialTheme.typography.h5,
-                    color = MaterialTheme.colors.onSurface,
+                    style = typography.h5,
+                    color = colors.onSurface,
                     textAlign = if (isDualScreenMode) TextAlign.Start else TextAlign.Center,
                     modifier = Modifier
                         .fillMaxWidth()
