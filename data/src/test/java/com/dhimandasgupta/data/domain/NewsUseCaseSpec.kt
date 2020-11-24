@@ -35,9 +35,9 @@ class NewsUseCaseSpec {
                 source = SourceDomainModel(sourceName = "some_query")
             )
         )
-        coEvery { newsUseCase.getEverythingByQuery(Params("some_query")) } returns returnedNewsDomainModel
+        coEvery { newsUseCase.execute(Params("some_query")) } returns returnedNewsDomainModel
 
-        val newsDomainModel = newsUseCase.getEverythingByQuery(Params("some_query"))
+        val newsDomainModel = newsUseCase.execute(Params("some_query"))
         assertNotNull(newsDomainModel)
         assertNotNull(newsDomainModel.articles)
         assertEquals(0, newsDomainModel.articles.size)
@@ -62,9 +62,9 @@ class NewsUseCaseSpec {
                 )
             )
         )
-        coEvery { newsUseCase.getEverythingByQuery(Params("some_query")) } returns returnedNewsDomainModel
+        coEvery { newsUseCase.execute(Params("some_query")) } returns returnedNewsDomainModel
 
-        val newsDomainModel = newsUseCase.getEverythingByQuery(Params("some_query"))
+        val newsDomainModel = newsUseCase.execute(Params("some_query"))
         assertNotNull(newsDomainModel)
         assertNotNull(newsDomainModel.articles)
         assertEquals(1, newsDomainModel.articles.size)

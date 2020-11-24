@@ -48,7 +48,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.viewModel
 import com.dhimandasgupta.data.presentaion.ArticleUIModel
 import com.dhimandasgupta.data.presentaion.ArticlesUIModel
 import com.dhimandasgupta.data.presentaion.ErrorUIModel
@@ -60,18 +59,20 @@ import com.dhimandasgupta.data.presentaion.UIModels
 import com.dhimandasgupta.myjetpacknews.R
 import com.dhimandasgupta.myjetpacknews.ui.common.MyNewsTheme
 import com.dhimandasgupta.myjetpacknews.ui.common.shapes
-import com.dhimandasgupta.myjetpacknews.viewmodel.MultipleSourceViewModel
+import com.dhimandasgupta.myjetpacknews.viewmodel.MainActivityViewModel
 import com.microsoft.device.dualscreen.core.ScreenHelper
 import dev.chrisbanes.accompanist.coil.CoilImage
 
 @ExperimentalAnimationApi
 @Composable
 fun MultipleSourceScreen(
+    viewModel: MainActivityViewModel,
     onUpClicked: () -> Unit,
     onNewsClicked: (String) -> Unit
 ) {
     MyNewsTheme {
         ThemedMultiSourceScreen(
+            viewModel = viewModel,
             onUpClicked = onUpClicked,
             onNewsClicked = onNewsClicked
         )
@@ -81,11 +82,10 @@ fun MultipleSourceScreen(
 @ExperimentalAnimationApi
 @Composable
 fun ThemedMultiSourceScreen(
+    viewModel: MainActivityViewModel,
     onUpClicked: () -> Unit,
     onNewsClicked: (String) -> Unit
 ) {
-    val multipleSourceViewModel: MultipleSourceViewModel = viewModel()
-
     Scaffold(
         topBar = {
             NewsTopAppBarForMultiSource(
@@ -94,7 +94,7 @@ fun ThemedMultiSourceScreen(
         },
         bodyContent = {
             NewsBodyForMultiSource(
-                multipleSourceViewModel = multipleSourceViewModel,
+                mainActivityViewModel = viewModel,
                 onNewsClicked = onNewsClicked
             )
         }
@@ -138,10 +138,10 @@ fun NewsTopAppBarForMultiSource(
 @ExperimentalAnimationApi
 @Composable
 fun NewsBodyForMultiSource(
-    multipleSourceViewModel: MultipleSourceViewModel,
+    mainActivityViewModel: MainActivityViewModel,
     onNewsClicked: (String) -> Unit
 ) {
-    val newsUiState = multipleSourceViewModel
+    val newsUiState = mainActivityViewModel
         .sourcesLiveData
         .observeAsState(initial = emptyList())
 
@@ -158,7 +158,7 @@ fun NewsBodyForMultiSource(
                 .wrapContentHeight(align = Alignment.CenterVertically)
         ) {
             NewsRowForSource(
-                multipleSourceViewModel = multipleSourceViewModel,
+                mainActivityViewModel = mainActivityViewModel,
                 source = it,
                 onNewsClicked = onNewsClicked
             )
@@ -169,7 +169,7 @@ fun NewsBodyForMultiSource(
 @ExperimentalAnimationApi
 @Composable
 fun NewsRowForSource(
-    multipleSourceViewModel: MultipleSourceViewModel,
+    mainActivityViewModel: MainActivityViewModel,
     source: Source,
     onNewsClicked: (String) -> Unit
 ) {
@@ -181,7 +181,7 @@ fun NewsRowForSource(
         LaunchedEffect(
             subject = source,
             block = {
-                news.value = multipleSourceViewModel.fetchNewsFrom(source)
+                news.value = mainActivityViewModel.fetchNewsFrom(source)
             }
         )
         Spacer(

@@ -63,6 +63,12 @@ object Deps {
         const val hiltAndroid = "com.google.dagger:hilt-android:$version"
     }
 
+    object ThreeTenAndroid {
+        private const val version = "1.3.0"
+
+        const val threeTenABP = "com.jakewharton.threetenabp:threetenabp:$version"
+    }
+
     object HiltAndroid {
         private const val version = "1.0.0-alpha02"
 
@@ -71,13 +77,15 @@ object Deps {
     }
 
     object AndroidX {
-        private const val androidXCoreVersion = "1.3.0"
+        private const val androidXCoreVersion = "1.3.2"
         private const val androidXVersion = "1.1.0"
+        private const val viewModelKtxVersion = "2.2.0"
 
         const val coreKtx = "androidx.core:core-ktx:$androidXCoreVersion"
         const val appcompat = "androidx.appcompat:appcompat:$androidXVersion"
         const val activityKtx = "androidx.activity:activity-ktx:$androidXVersion"
         const val material = "com.google.android.material:material:$androidXVersion"
+        const val viewModelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:$viewModelKtxVersion"
 
         object Compose {
             private const val version = "1.0.0-alpha07"
@@ -92,6 +100,12 @@ object Deps {
             const val composer = "androidx.compose:compose-compiler:$version"
             const val savedInstanceState = "androidx.compose.runtime:runtime-saved-instance-state:$version"
             const val liveData = "androidx.compose.runtime:runtime-livedata:$version"
+
+            object Navigation {
+                private const val version = "1.0.0-alpha02"
+
+                const val navigation = "androidx.navigation:navigation-compose:$version"
+            }
         }
 
         object Accompanist {

@@ -1,6 +1,5 @@
 package com.dhimandasgupta.myjetpacknews.ui.screens
 
-import android.content.Intent
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -16,6 +15,10 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.ripple.RippleIndication
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.onActive
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ConfigurationAmbient
@@ -30,15 +33,27 @@ import com.dhimandasgupta.myjetpacknews.ui.common.MyNewsTheme
 import com.dhimandasgupta.myjetpacknews.ui.data.Page
 import com.dhimandasgupta.myjetpacknews.ui.ext.toListOfPairedPages
 import com.microsoft.device.dualscreen.core.ScreenHelper
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.format.DateTimeFormatter
 
 @Composable
 fun MainScreen(
+    navigateToPage: (Page) -> Unit,
     pages: List<Page>
 ) {
     MyNewsTheme {
         Scaffold(
             topBar = { MainTopAppBar() },
-            bodyContent = { MainContent(pages) }
+            bodyContent = {
+                MainContent(
+                    navigateToPage = navigateToPage,
+                    pages = pages
+                )
+            },
+            bottomBar = { RenderBottomBar() }
         )
     }
 }
@@ -62,19 +77,27 @@ fun MainTopAppBar() {
 }
 
 @Composable
-fun MainContent(pages: List<Page>) {
+fun MainContent(
+    navigateToPage: (Page) -> Unit,
+    pages: List<Page>
+) {
     when (ConfigurationAmbient.current.orientation) {
-        ORIENTATION_LANDSCAPE -> RenderLandscapeContent(pages = pages)
-        else -> RenderPortraitContent(pages = pages)
+        ORIENTATION_LANDSCAPE -> RenderLandscapeContent(
+            navigateToPage = navigateToPage,
+            pages = pages,
+        )
+        else -> RenderPortraitContent(
+            navigateToPage = navigateToPage,
+            pages = pages,
+        )
     }
 }
 
 @Composable
 fun RenderLandscapeContent(
+    navigateToPage: (Page) -> Unit,
     pages: List<Page>
 ) {
-    val context = ContextAmbient.current
-
     LazyColumnForIndexed(
         items = pages.toListOfPairedPages(),
         modifier = Modifier.fillMaxSize(1.0f)
@@ -82,13 +105,13 @@ fun RenderLandscapeContent(
         Row {
             RenderContent(
                 page = item.first,
-                onClick = { context.startActivity(Intent(context, item.first.clazz)) },
+                onClick = { navigateToPage.invoke(item.first) },
                 modifier = Modifier.fillMaxWidth(0.5f),
             )
             item.second?.let {
                 RenderContent(
                     page = it,
-                    onClick = { context.startActivity(Intent(context, it.clazz)) },
+                    onClick = { navigateToPage.invoke(it) },
                     modifier = Modifier.fillMaxWidth(1.0f),
                 )
             }
@@ -98,14 +121,13 @@ fun RenderLandscapeContent(
 
 @Composable
 fun RenderPortraitContent(
+    navigateToPage: (Page) -> Unit,
     pages: List<Page>
 ) {
-    val context = ContextAmbient.current
-
     LazyColumnForIndexed(items = pages) { _, item ->
         RenderContent(
             page = item,
-            onClick = { context.startActivity(Intent(context, item.clazz)) },
+            onClick = { navigateToPage.invoke(item) },
             modifier = Modifier.fillMaxWidth(1.0f),
         )
     }
@@ -134,5 +156,35 @@ fun RenderContent(page: Page, modifier: Modifier, onClick: () -> Unit) {
                 modifier = Modifier.fillMaxWidth(),
             )
         }
+    )
+}
+
+@Composable
+fun RenderBottomBar() {
+    val scope = rememberCoroutineScope()
+    val formatter = remember { DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss a z") }
+    val state = remember { mutableStateOf(ZonedDateTime.now().format(formatter)) }
+
+    onActive(
+        callback = {
+            scope.launch {
+                while (isActive) {
+                    delay(1000)
+                    state.value = ZonedDateTime.now().format(formatter)
+                }
+            }
+        }
+    )
+
+    Text(
+        text = state.value,
+        style = typography.h6,
+        color = MaterialTheme.colors.onSurface,
+        textAlign = Center,
+        overflow = TextOverflow.Ellipsis,
+        maxLines = 1,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
     )
 }

@@ -56,6 +56,7 @@ dependencies {
     implementation Deps.AndroidX.appcompat
     implementation Deps.AndroidX.activityKtx
     implementation Deps.AndroidX.material
+    implementation Deps.AndroidX.viewModelKtx
 
     // Compose
     implementation Deps.AndroidX.Compose.ui
@@ -68,6 +69,7 @@ dependencies {
     implementation Deps.AndroidX.Compose.liveData
     implementation Deps.AndroidX.Compose.animationCore
     implementation Deps.AndroidX.Compose.animation
+    implementation Deps.AndroidX.Compose.Navigation.navigation
 
     // Microsoft Duo
     implementation Deps.MicrosoftDuo.duoCore
@@ -85,6 +87,9 @@ dependencies {
     kapt Deps.Hilt.kapt
     implementation Deps.HiltAndroid.viewModel
     kapt Deps.HiltAndroid.kapt
+
+    // Time
+    implementation Deps.ThreeTenAndroid.threeTenABP
 
     // Testing dependencies
     testImplementation Deps.AndroidX.AndroidXCoreTesting

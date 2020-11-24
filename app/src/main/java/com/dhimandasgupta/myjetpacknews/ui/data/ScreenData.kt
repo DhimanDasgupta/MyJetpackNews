@@ -1,21 +1,37 @@
 package com.dhimandasgupta.myjetpacknews.ui.data
 
-import android.app.Activity
-import com.dhimandasgupta.myjetpacknews.MultiSourceActivity
-import com.dhimandasgupta.myjetpacknews.SingleSourceActivity
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.navigate
+import com.dhimandasgupta.myjetpacknews.ui.data.Destinations.MultipleSourceScreen
+import com.dhimandasgupta.myjetpacknews.ui.data.Destinations.SingleSourceScreen
 
 data class Page(
     val name: String,
-    val clazz: Class<out Activity>
+    val route: String
 )
 
 val pages = listOf(
     Page(
         name = "Single source news at a time",
-        clazz = SingleSourceActivity::class.java
+        route = SingleSourceScreen
     ),
     Page(
         name = "Multiple Sources at a time",
-        clazz = MultiSourceActivity::class.java
+        route = MultipleSourceScreen
     ),
 )
+
+object Destinations {
+    const val HomeScreen = "home"
+    const val SingleSourceScreen = "SingleSource"
+    const val MultipleSourceScreen = "MultipleSource"
+}
+
+class Actions(navController: NavHostController) {
+    val navigateToPage: (Page) -> Unit = { page ->
+        navController.navigate(page.route)
+    }
+    val navigateBack: () -> Unit = {
+        navController.navigateUp()
+    }
+}

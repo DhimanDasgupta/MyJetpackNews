@@ -51,7 +51,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.viewModel
 import com.dhimandasgupta.data.presentaion.ArticleUIModel
 import com.dhimandasgupta.data.presentaion.ErrorUIModel
 import com.dhimandasgupta.data.presentaion.IdleUIModel
@@ -63,18 +62,20 @@ import com.dhimandasgupta.data.presentaion.initialNewsUiState
 import com.dhimandasgupta.myjetpacknews.R
 import com.dhimandasgupta.myjetpacknews.ui.common.MyNewsTheme
 import com.dhimandasgupta.myjetpacknews.ui.common.shapes
-import com.dhimandasgupta.myjetpacknews.viewmodel.SingleSourceViewModel
+import com.dhimandasgupta.myjetpacknews.viewmodel.MainActivityViewModel
 import com.microsoft.device.dualscreen.core.ScreenHelper
 import dev.chrisbanes.accompanist.coil.CoilImage
 
 @ExperimentalAnimationApi
 @Composable
 fun SingleSourceScreen(
+    viewModel: MainActivityViewModel,
     onUpClicked: () -> Unit,
     onNewsClicked: (String) -> Unit
 ) {
     MyNewsTheme {
         ThemedSingleSourceScreen(
+            viewModel = viewModel,
             onUpClicked = onUpClicked,
             onNewsClicked = onNewsClicked
         )
@@ -84,11 +85,11 @@ fun SingleSourceScreen(
 @ExperimentalAnimationApi
 @Composable
 fun ThemedSingleSourceScreen(
+    viewModel: MainActivityViewModel,
     onUpClicked: () -> Unit,
     onNewsClicked: (String) -> Unit
 ) {
-    val singleSourceViewModel: SingleSourceViewModel = viewModel()
-    val newsUiState = singleSourceViewModel
+    val newsUiState = viewModel
         .newsUiState
         .observeAsState(initial = initialNewsUiState)
 
@@ -105,7 +106,7 @@ fun ThemedSingleSourceScreen(
                 sources = newsUiState.value.allSources,
                 onNewsClicked = onNewsClicked
             ) { source ->
-                if (!source.selected) singleSourceViewModel.fetchNewsFromSource(
+                if (!source.selected) viewModel.fetchNewsFromSource(
                     source = source
                 )
             }
@@ -114,7 +115,7 @@ fun ThemedSingleSourceScreen(
             NewsBottomAppBar(
                 sources = newsUiState.value.allSources
             ) { source ->
-                if (!source.selected) singleSourceViewModel.fetchNewsFromSource(
+                if (!source.selected) viewModel.fetchNewsFromSource(
                     source = source
                 )
             }

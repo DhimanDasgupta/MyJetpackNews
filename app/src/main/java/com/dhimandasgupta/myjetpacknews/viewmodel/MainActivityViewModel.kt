@@ -11,21 +11,30 @@ import com.dhimandasgupta.data.presentaion.ErrorUIModel
 import com.dhimandasgupta.data.presentaion.LoadingUIModel
 import com.dhimandasgupta.data.presentaion.NewsUiState
 import com.dhimandasgupta.data.presentaion.Source
+import com.dhimandasgupta.data.presentaion.SuccessUIModel
+import com.dhimandasgupta.data.presentaion.UIModels
 import com.dhimandasgupta.data.presentaion.initialNewsUiState
 import com.dhimandasgupta.data.presentaion.mapSource
+import com.dhimandasgupta.data.presentaion.sources
 import com.dhimandasgupta.data.presentaion.toUIModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
-class SingleSourceViewModel @ViewModelInject constructor(
+class MainActivityViewModel @ViewModelInject constructor(
     private val useCase: NewsUseCase
 ) : ViewModel() {
+    // Variables used for Single Source Composable
     private val newsUiStateMutableLiveData = MutableLiveData<NewsUiState>().also {
         it.value = initialNewsUiState
     }
     val newsUiState: LiveData<NewsUiState> = newsUiStateMutableLiveData
+    private var currentJob: Job? = null
+
+    // Variable used for Multi Source Composable
+    val sourcesLiveData: LiveData<List<Source>> = MutableLiveData(sources)
+    private val sourceWithUiMap = HashMap<Source, UIModels>()
 
     init {
         val source = newsUiStateMutableLiveData.value?.allSources?.first()
@@ -33,8 +42,6 @@ class SingleSourceViewModel @ViewModelInject constructor(
             fetchNewsFromSource(noNullSource)
         }
     }
-
-    private var currentJob: Job? = null
 
     fun fetchNewsFromSource(source: Source) {
         val newSources = mapSource(query = source.title)
@@ -50,7 +57,7 @@ class SingleSourceViewModel @ViewModelInject constructor(
                         allSources = newSources
                     )
                 )
-                return@runCatching useCase.getEverythingByQuery(Params(query = source.title)).toUIModel()
+                return@runCatching useCase.execute(Params(query = source.title)).toUIModel()
             }.onSuccess { uiModels ->
                 newsUiStateMutableLiveData.postValue(
                     newsUiStateMutableLiveData.value?.copy(
@@ -69,5 +76,19 @@ class SingleSourceViewModel @ViewModelInject constructor(
                 )
             }
         }
+    }
+
+    suspend fun fetchNewsFrom(source: Source): UIModels {
+        if (sourceWithUiMap.containsKey(source) && sourceWithUiMap[source] is SuccessUIModel) {
+            return sourceWithUiMap[source]!!
+        }
+
+        try {
+            sourceWithUiMap[source] = useCase.execute(Params(query = source.title)).toUIModel()
+        } catch (e: Exception) {
+            sourceWithUiMap[source] = ErrorUIModel(e, source)
+        }
+
+        return sourceWithUiMap[source]!!
     }
 }

@@ -21,7 +21,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class SingleSourceViewModelSpec {
+class MainActivityViewModelSpec {
     @get:Rule
     val instantTestExecutorRule = InstantTaskExecutorRule()
 
@@ -30,12 +30,12 @@ class SingleSourceViewModelSpec {
 
     private val fakeNewsUseCase: NewsUseCase = FakeNewsUseCase()
 
-    private lateinit var singleSourceViewModel: SingleSourceViewModel
+    private lateinit var singleSourceViewModel: MainActivityViewModel
 
     @Before
     fun init() {
         Dispatchers.setMain(mainCoroutineRule.testDispatcher)
-        singleSourceViewModel = SingleSourceViewModel(fakeNewsUseCase)
+        singleSourceViewModel = MainActivityViewModel(fakeNewsUseCase)
     }
 
     @After
@@ -81,7 +81,7 @@ class SingleSourceViewModelSpec {
 }
 
 private class FakeNewsUseCase : NewsUseCase {
-    override suspend fun getEverythingByQuery(params: Params) = NewsDomainModel(
+    override suspend fun execute(params: Params) = NewsDomainModel(
         articles = listOf(
             ArticleDomainModel(
                 sourceName = "some source",
