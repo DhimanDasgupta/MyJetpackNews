@@ -1,19 +1,19 @@
 package com.dhimandasgupta.myjetpacknews.ui.screens
 
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
+import androidx.compose.foundation.AmbientIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumnForIndexed
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
-import androidx.compose.material.ripple.RippleIndication
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.onActive
@@ -21,8 +21,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ConfigurationAmbient
-import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.platform.AmbientConfiguration
+import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign.Center
 import androidx.compose.ui.text.style.TextAlign.Start
@@ -60,7 +60,7 @@ fun MainScreen(
 
 @Composable
 fun MainTopAppBar() {
-    val isDualScreenMode = ScreenHelper.isDualMode(ContextAmbient.current)
+    val isDualScreenMode = ScreenHelper.isDualMode(AmbientContext.current)
 
     TopAppBar {
         Text(
@@ -81,7 +81,7 @@ fun MainContent(
     navigateToPage: (Page) -> Unit,
     pages: List<Page>
 ) {
-    when (ConfigurationAmbient.current.orientation) {
+    when (AmbientConfiguration.current.orientation) {
         ORIENTATION_LANDSCAPE -> RenderLandscapeContent(
             navigateToPage = navigateToPage,
             pages = pages,
@@ -98,24 +98,28 @@ fun RenderLandscapeContent(
     navigateToPage: (Page) -> Unit,
     pages: List<Page>
 ) {
-    LazyColumnForIndexed(
-        items = pages.toListOfPairedPages(),
+    LazyColumn(
         modifier = Modifier.fillMaxSize(1.0f)
-    ) { _, item ->
-        Row {
-            RenderContent(
-                page = item.first,
-                onClick = { navigateToPage.invoke(item.first) },
-                modifier = Modifier.fillMaxWidth(0.5f),
-            )
-            item.second?.let {
-                RenderContent(
-                    page = it,
-                    onClick = { navigateToPage.invoke(it) },
-                    modifier = Modifier.fillMaxWidth(1.0f),
-                )
+    ) {
+        itemsIndexed(
+            items = pages.toListOfPairedPages(),
+            itemContent = { _, item ->
+                Row {
+                    RenderContent(
+                        page = item.first,
+                        onClick = { navigateToPage.invoke(item.first) },
+                        modifier = Modifier.fillMaxWidth(0.5f),
+                    )
+                    item.second?.let {
+                        RenderContent(
+                            page = it,
+                            onClick = { navigateToPage.invoke(it) },
+                            modifier = Modifier.fillMaxWidth(1.0f),
+                        )
+                    }
+                }
             }
-        }
+        )
     }
 }
 
@@ -124,11 +128,16 @@ fun RenderPortraitContent(
     navigateToPage: (Page) -> Unit,
     pages: List<Page>
 ) {
-    LazyColumnForIndexed(items = pages) { _, item ->
-        RenderContent(
-            page = item,
-            onClick = { navigateToPage.invoke(item) },
-            modifier = Modifier.fillMaxWidth(1.0f),
+    LazyColumn {
+        itemsIndexed(
+            items = pages,
+            itemContent = { _, item ->
+                RenderContent(
+                    page = item,
+                    onClick = { navigateToPage.invoke(item) },
+                    modifier = Modifier.fillMaxWidth(1.0f),
+                )
+            }
         )
     }
 }
@@ -141,22 +150,21 @@ fun RenderContent(page: Page, modifier: Modifier, onClick: () -> Unit) {
             .padding(8.dp)
             .clickable(
                 enabled = true,
-                indication = RippleIndication(),
+                indication = AmbientIndication.current(),
                 onClick = { onClick.invoke() }
             ),
-        alignment = Alignment.Center,
-        children = {
-            Text(
-                text = page.name,
-                style = typography.h6,
-                color = MaterialTheme.colors.onSurface,
-                textAlign = Center,
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 1,
-                modifier = Modifier.fillMaxWidth(),
-            )
-        }
-    )
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = page.name,
+            style = typography.h6,
+            color = MaterialTheme.colors.onSurface,
+            textAlign = Center,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1,
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
 }
 
 @Composable

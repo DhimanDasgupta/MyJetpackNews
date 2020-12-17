@@ -32,11 +32,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
         useIR = true
     }
     buildFeatures {
@@ -63,8 +63,6 @@ dependencies {
     implementation Deps.AndroidX.Compose.runtime
     implementation Deps.AndroidX.Compose.foundation
     implementation Deps.AndroidX.Compose.material
-    // implementation Deps.AndroidX.Compose.composer
-    implementation Deps.AndroidX.Compose.tooling
     implementation Deps.AndroidX.Compose.savedInstanceState
     implementation Deps.AndroidX.Compose.liveData
     implementation Deps.AndroidX.Compose.animationCore
@@ -103,7 +101,7 @@ kapt {
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
         freeCompilerArgs += ["-Xallow-jvm-ir-dependencies", "-Xskip-prerelease-check"]
     }
 }

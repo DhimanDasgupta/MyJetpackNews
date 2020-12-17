@@ -7,6 +7,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.AmbientIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -24,8 +25,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyColumnFor
-import androidx.compose.foundation.lazy.LazyRowFor
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
@@ -36,7 +37,6 @@ import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
-import androidx.compose.material.ripple.RippleIndication
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment.Companion.Center
@@ -44,8 +44,8 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Alignment.Companion.TopStart
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ConfigurationAmbient
-import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.platform.AmbientConfiguration
+import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
@@ -128,7 +128,7 @@ fun NewsTopAppBar(
     source: Source,
     onUpClicked: () -> Unit
 ) {
-    val isDualScreenMode = ScreenHelper.isDualMode(ContextAmbient.current)
+    val isDualScreenMode = ScreenHelper.isDualMode(AmbientContext.current)
 
     TopAppBar {
         IconButton(
@@ -136,14 +136,13 @@ fun NewsTopAppBar(
             modifier = Modifier
                 .wrapContentSize(align = Center)
                 .align(CenterVertically),
-            icon = {
-                Icon(
-                    asset = vectorResource(R.drawable.ic_arrow_back),
-                    tint = colors.onPrimary,
-                    modifier = Modifier.preferredSize(48.dp)
-                )
-            }
-        )
+        ) {
+            Icon(
+                imageVector = vectorResource(R.drawable.ic_arrow_back),
+                tint = colors.onPrimary,
+                modifier = Modifier.preferredSize(48.dp)
+            )
+        }
 
         Text(
             text = stringResource(
@@ -173,10 +172,10 @@ fun NewsBody(
         modifier = Modifier
             .fillMaxSize(1f)
             .background(color = colors.surface),
-        alignment = TopStart
+        contentAlignment = TopStart
     ) {
-        val isLandscape = ConfigurationAmbient.current.orientation == ORIENTATION_LANDSCAPE
-        val isDualScreenMode = ScreenHelper.isDualMode(ContextAmbient.current)
+        val isLandscape = AmbientConfiguration.current.orientation == ORIENTATION_LANDSCAPE
+        val isDualScreenMode = ScreenHelper.isDualMode(AmbientContext.current)
         val leftSourcesWeight = when {
             isLandscape && isDualScreenMode -> 0.5f
             isLandscape -> 0.3f
@@ -187,15 +186,19 @@ fun NewsBody(
             modifier = Modifier.fillMaxWidth()
         ) {
             if (isLandscape) {
-                LazyColumnFor(
-                    items = sources,
+                LazyColumn(
                     modifier = Modifier.weight(
                         leftSourcesWeight, true
                     ).fillMaxHeight().padding(start = 8.dp)
                 ) {
-                    BottomAppBarItem(
-                        source = it,
-                        onSourceSelected = onSourceSelected
+                    items(
+                        items = sources,
+                        itemContent = {
+                            BottomAppBarItem(
+                                source = it,
+                                onSourceSelected = onSourceSelected
+                            )
+                        }
                     )
                 }
             }
@@ -239,7 +242,7 @@ fun RenderIdle() {
     Box(
         modifier = Modifier
             .fillMaxSize(),
-        alignment = Center
+        contentAlignment = Center
     ) {
         Column {
             CircularProgressIndicator(
@@ -264,7 +267,7 @@ fun RenderLoading(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        alignment = Center
+        contentAlignment = Center
     ) {
         Column {
             CircularProgressIndicator(
@@ -298,14 +301,18 @@ fun RenderArticles(
     articles: List<ArticleUIModel>,
     onNewsClicked: (String) -> Unit
 ) {
-    LazyColumnFor(
-        items = articles,
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize(1f)
     ) {
-        RenderArticle(
-            article = it,
-            onNewsClicked = onNewsClicked
+        items(
+            items = articles,
+            itemContent = {
+                RenderArticle(
+                    article = it,
+                    onNewsClicked = onNewsClicked
+                )
+            }
         )
     }
 }
@@ -335,7 +342,7 @@ fun RenderArticle(
                     .fillMaxWidth()
                     .clickable(
                         enabled = true,
-                        indication = RippleIndication(bounded = true),
+                        indication = AmbientIndication.current(),
                         onClick = { onNewsClicked.invoke(article.url) }
                     )
             ) {
@@ -405,7 +412,7 @@ fun RenderError(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        alignment = Center
+        contentAlignment = Center
     ) {
         Column {
             Text(
@@ -454,19 +461,23 @@ fun RenderError(
 @ExperimentalAnimationApi
 @Composable
 fun NewsBottomAppBar(sources: List<Source>, onSourceSelected: (Source) -> Unit) {
-    if (ConfigurationAmbient.current.orientation == ORIENTATION_PORTRAIT) {
+    if (AmbientConfiguration.current.orientation == ORIENTATION_PORTRAIT) {
         BottomAppBar(
             modifier = Modifier
                 .wrapContentHeight(align = CenterVertically)
         ) {
-            LazyRowFor(
-                items = sources,
+            LazyRow(
                 modifier = Modifier
                     .fillMaxHeight()
             ) {
-                BottomAppBarItem(
-                    source = it,
-                    onSourceSelected = onSourceSelected
+                items(
+                    items = sources,
+                    itemContent = {
+                        BottomAppBarItem(
+                            source = it,
+                            onSourceSelected = onSourceSelected
+                        )
+                    }
                 )
             }
         }
@@ -479,10 +490,10 @@ fun BottomAppBarItem(
     source: Source,
     onSourceSelected: (Source) -> Unit
 ) {
-    val isLandscape = ConfigurationAmbient.current.orientation == ORIENTATION_LANDSCAPE
+    val isLandscape = AmbientConfiguration.current.orientation == ORIENTATION_LANDSCAPE
     val textColor = if (isLandscape) colors.onSurface else colors.onPrimary
 
-    val isDualScreenMode = ScreenHelper.isDualMode(ContextAmbient.current)
+    val isDualScreenMode = ScreenHelper.isDualMode(AmbientContext.current)
 
     AnimatedVisibility(
         initiallyVisible = false,
@@ -495,7 +506,7 @@ fun BottomAppBarItem(
                 .fillMaxSize()
                 .clickable(
                     enabled = true,
-                    indication = RippleIndication(bounded = true),
+                    indication = AmbientIndication.current(),
                     onClick = { onSourceSelected.invoke(source) }
                 )
         ) {

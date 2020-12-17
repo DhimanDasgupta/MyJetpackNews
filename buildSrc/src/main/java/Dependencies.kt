@@ -15,20 +15,20 @@ object Versions {
 }
 
 object Deps {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha16"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha03"
     const val kotlinGradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Kotlin.version}"
     const val hiltGradlePlugin = "com.google.dagger:hilt-android-gradle-plugin:${Hilt.version}"
 
     object Kotlin {
-        const val version = "1.4.0"
+        const val version = "1.4.21"
         const val stdLib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
         const val common = "org.jetbrains.kotlin:kotlin-stdlib-common:$version"
 
-        const val compilerVersion = "1.4.0-dev-withExperimentalGoogleExtensions-20200720"
+        const val compilerVersion = "1.4.21"
 
         object Coroutine {
-            private const val version = "1.4.0"
+            private const val version = "1.4.2"
 
             const val coroutineCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
             const val coroutineAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
@@ -88,7 +88,7 @@ object Deps {
         const val viewModelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:$viewModelKtxVersion"
 
         object Compose {
-            private const val version = "1.0.0-alpha07"
+            private const val version = "1.0.0-alpha09"
 
             const val ui = "androidx.compose.ui:ui:$version"
             const val runtime = "androidx.compose.runtime:runtime:$version"
@@ -96,20 +96,19 @@ object Deps {
             const val material = "androidx.compose.material:material:$version"
             const val animationCore = "androidx.compose.animation:animation-core:$version"
             const val animation = "androidx.compose.animation:animation:$version"
-            const val tooling = "androidx.ui:ui-tooling:$version"
             const val composer = "androidx.compose:compose-compiler:$version"
             const val savedInstanceState = "androidx.compose.runtime:runtime-saved-instance-state:$version"
             const val liveData = "androidx.compose.runtime:runtime-livedata:$version"
 
             object Navigation {
-                private const val version = "1.0.0-alpha02"
+                private const val version = "1.0.0-alpha03"
 
                 const val navigation = "androidx.navigation:navigation-compose:$version"
             }
         }
 
         object Accompanist {
-            private const val version = "0.3.3.1"
+            private const val version = "0.4.1"
 
             const val accompanistCoil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
             const val accompanistMdc = "dev.chrisbanes.accompanist:accompanist-mdc-theme:$version"

@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.AmbientIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -20,8 +21,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumnFor
-import androidx.compose.foundation.lazy.LazyRowFor
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
@@ -33,7 +34,6 @@ import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
-import androidx.compose.material.ripple.RippleIndication
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -43,7 +43,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
@@ -105,7 +105,7 @@ fun ThemedMultiSourceScreen(
 fun NewsTopAppBarForMultiSource(
     onUpClicked: () -> Unit
 ) {
-    val isDualScreenMode = ScreenHelper.isDualMode(ContextAmbient.current)
+    val isDualScreenMode = ScreenHelper.isDualMode(AmbientContext.current)
 
     TopAppBar {
         IconButton(
@@ -113,15 +113,14 @@ fun NewsTopAppBarForMultiSource(
             modifier = Modifier
                 .wrapContentSize(align = Alignment.Center)
                 .align(alignment = Alignment.CenterVertically),
-            icon = {
-                Icon(
-                    asset = vectorResource(R.drawable.ic_arrow_back),
-                    tint = colors.onPrimary,
-                    modifier = Modifier
-                        .preferredSize(48.dp)
-                )
-            }
-        )
+        ) {
+            Icon(
+                imageVector = vectorResource(R.drawable.ic_arrow_back),
+                tint = colors.onPrimary,
+                modifier = Modifier
+                    .preferredSize(48.dp)
+            )
+        }
         Text(
             text = stringResource(id = R.string.multi_source_title),
             style = typography.h5,
@@ -149,18 +148,22 @@ fun NewsBodyForMultiSource(
         modifier = Modifier
             .fillMaxSize()
             .background(color = colors.surface),
-        alignment = Alignment.TopStart
+        contentAlignment = Alignment.TopStart
     ) {
-        LazyColumnFor(
-            items = newsUiState.value,
+        LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight(align = Alignment.CenterVertically)
         ) {
-            NewsRowForSource(
-                mainActivityViewModel = mainActivityViewModel,
-                source = it,
-                onNewsClicked = onNewsClicked
+            items(
+                items = newsUiState.value,
+                itemContent = {
+                    NewsRowForSource(
+                        mainActivityViewModel = mainActivityViewModel,
+                        source = it,
+                        onNewsClicked = onNewsClicked
+                    )
+                }
             )
         }
     }
@@ -173,7 +176,7 @@ fun NewsRowForSource(
     source: Source,
     onNewsClicked: (String) -> Unit
 ) {
-    val isDualScreenMode = ScreenHelper.isDualMode(ContextAmbient.current)
+    val isDualScreenMode = ScreenHelper.isDualMode(AmbientContext.current)
 
     Column {
         val news: MutableState<UIModels> = remember { mutableStateOf(LoadingUIModel(source)) }
@@ -235,14 +238,14 @@ fun RenderNewsIdleState() {
 fun RenderLoadingState(
     source: Source
 ) {
-    val isDualScreenMode = ScreenHelper.isDualMode(ContextAmbient.current)
+    val isDualScreenMode = ScreenHelper.isDualMode(AmbientContext.current)
 
     ListItem {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            alignment = Alignment.Center
+            contentAlignment = Alignment.Center
         ) {
             Column {
                 LinearProgressIndicator(
@@ -276,15 +279,19 @@ fun RenderArticlesState(
     onNewsClicked: (String) -> Unit
 ) {
     ListItem {
-        LazyRowFor(
-            items = articlesUIModel.articles,
+        LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
         ) {
-            RenderEachArticle(
-                article = it,
-                onNewsClicked = onNewsClicked
+            items(
+                items = articlesUIModel.articles,
+                itemContent = {
+                    RenderEachArticle(
+                        article = it,
+                        onNewsClicked = onNewsClicked
+                    )
+                }
             )
         }
     }
@@ -317,7 +324,7 @@ fun RenderEachArticle(
                     .size(cardSize)
                     .clickable(
                         enabled = true,
-                        indication = RippleIndication(bounded = true),
+                        indication = AmbientIndication.current(),
                         onClick = {
                             onNewsClicked.invoke(article.url)
                         }
@@ -360,7 +367,7 @@ fun RenderEachArticle(
 fun RenderErrorState(
     errorUIModel: ErrorUIModel
 ) {
-    val isDualScreenMode = ScreenHelper.isDualMode(ContextAmbient.current)
+    val isDualScreenMode = ScreenHelper.isDualMode(AmbientContext.current)
 
     ListItem {
         Box(
@@ -368,7 +375,7 @@ fun RenderErrorState(
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .padding(16.dp),
-            alignment = Alignment.Center
+            contentAlignment = Alignment.Center
         ) {
             Column {
                 Text(

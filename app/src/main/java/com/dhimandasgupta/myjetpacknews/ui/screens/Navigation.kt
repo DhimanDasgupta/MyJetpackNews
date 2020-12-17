@@ -4,7 +4,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.platform.AmbientContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -20,7 +20,7 @@ import com.dhimandasgupta.myjetpacknews.viewmodel.MainActivityViewModel
 fun AppNavGraph(
     viewModel: MainActivityViewModel
 ) {
-    val context = ContextAmbient.current
+    val context = AmbientContext.current
 
     val navController = rememberNavController()
     val actions = remember(navController) { Actions(navController) }
