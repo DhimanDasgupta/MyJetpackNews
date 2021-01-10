@@ -75,6 +75,7 @@ dependencies {
 
     // Coil image for Compose
     implementation Deps.AndroidX.Accompanist.accompanistCoil
+    implementation Deps.AndroidX.Accompanist.accompanistWindowInset
 
     // ViewModel
     implementation Deps.AndroidX.Lifecycle.viewModelKtx

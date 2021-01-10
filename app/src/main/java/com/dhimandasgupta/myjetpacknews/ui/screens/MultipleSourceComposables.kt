@@ -59,30 +59,34 @@ import com.dhimandasgupta.data.presentaion.UIModels
 import com.dhimandasgupta.myjetpacknews.R
 import com.dhimandasgupta.myjetpacknews.ui.common.MyNewsTheme
 import com.dhimandasgupta.myjetpacknews.ui.common.shapes
-import com.dhimandasgupta.myjetpacknews.viewmodel.MainActivityViewModel
+import com.dhimandasgupta.myjetpacknews.viewmodel.MultiSourceViewModel
 import com.microsoft.device.dualscreen.core.ScreenHelper
 import dev.chrisbanes.accompanist.coil.CoilImage
+import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
+import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
 @ExperimentalAnimationApi
 @Composable
 fun MultipleSourceScreen(
-    viewModel: MainActivityViewModel,
+    viewModel: MultiSourceViewModel,
     onUpClicked: () -> Unit,
     onNewsClicked: (String) -> Unit
 ) {
     MyNewsTheme {
-        ThemedMultiSourceScreen(
-            viewModel = viewModel,
-            onUpClicked = onUpClicked,
-            onNewsClicked = onNewsClicked
-        )
+        ProvideWindowInsets {
+            ThemedMultiSourceScreen(
+                viewModel = viewModel,
+                onUpClicked = onUpClicked,
+                onNewsClicked = onNewsClicked
+            )
+        }
     }
 }
 
 @ExperimentalAnimationApi
 @Composable
-fun ThemedMultiSourceScreen(
-    viewModel: MainActivityViewModel,
+private fun ThemedMultiSourceScreen(
+    viewModel: MultiSourceViewModel,
     onUpClicked: () -> Unit,
     onNewsClicked: (String) -> Unit
 ) {
@@ -94,7 +98,7 @@ fun ThemedMultiSourceScreen(
         },
         bodyContent = {
             NewsBodyForMultiSource(
-                mainActivityViewModel = viewModel,
+                viewModel = viewModel,
                 onNewsClicked = onNewsClicked
             )
         }
@@ -102,45 +106,54 @@ fun ThemedMultiSourceScreen(
 }
 
 @Composable
-fun NewsTopAppBarForMultiSource(
+private fun NewsTopAppBarForMultiSource(
     onUpClicked: () -> Unit
 ) {
     val isDualScreenMode = ScreenHelper.isDualMode(AmbientContext.current)
 
-    TopAppBar {
-        IconButton(
-            onClick = { onUpClicked.invoke() },
+    Column {
+        Spacer(
             modifier = Modifier
-                .wrapContentSize(align = Alignment.Center)
-                .align(alignment = Alignment.CenterVertically),
-        ) {
-            Icon(
-                imageVector = vectorResource(R.drawable.ic_arrow_back),
-                tint = colors.onPrimary,
+                .background(colors.primary)
+                .statusBarsHeight() // Match the height of the status bar
+                .fillMaxWidth()
+        )
+
+        TopAppBar {
+            IconButton(
+                onClick = { onUpClicked.invoke() },
                 modifier = Modifier
-                    .preferredSize(48.dp)
+                    .wrapContentSize(align = Alignment.Center)
+                    .align(alignment = Alignment.CenterVertically),
+            ) {
+                Icon(
+                    imageVector = vectorResource(R.drawable.ic_arrow_back),
+                    tint = colors.onPrimary,
+                    modifier = Modifier
+                        .preferredSize(48.dp)
+                )
+            }
+            Text(
+                text = stringResource(id = R.string.multi_source_title),
+                style = typography.h5,
+                color = colors.onPrimary,
+                textAlign = if (isDualScreenMode) TextAlign.Start else TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(alignment = Alignment.CenterVertically)
+                    .padding(8.dp)
             )
         }
-        Text(
-            text = stringResource(id = R.string.multi_source_title),
-            style = typography.h5,
-            color = colors.onPrimary,
-            textAlign = if (isDualScreenMode) TextAlign.Start else TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(alignment = Alignment.CenterVertically)
-                .padding(8.dp)
-        )
     }
 }
 
 @ExperimentalAnimationApi
 @Composable
-fun NewsBodyForMultiSource(
-    mainActivityViewModel: MainActivityViewModel,
+private fun NewsBodyForMultiSource(
+    viewModel: MultiSourceViewModel,
     onNewsClicked: (String) -> Unit
 ) {
-    val newsUiState = mainActivityViewModel
+    val newsUiState = viewModel
         .sourcesLiveData
         .observeAsState(initial = emptyList())
 
@@ -159,7 +172,7 @@ fun NewsBodyForMultiSource(
                 items = newsUiState.value,
                 itemContent = {
                     NewsRowForSource(
-                        mainActivityViewModel = mainActivityViewModel,
+                        viewModel = viewModel,
                         source = it,
                         onNewsClicked = onNewsClicked
                     )
@@ -171,8 +184,8 @@ fun NewsBodyForMultiSource(
 
 @ExperimentalAnimationApi
 @Composable
-fun NewsRowForSource(
-    mainActivityViewModel: MainActivityViewModel,
+private fun NewsRowForSource(
+    viewModel: MultiSourceViewModel,
     source: Source,
     onNewsClicked: (String) -> Unit
 ) {
@@ -184,7 +197,7 @@ fun NewsRowForSource(
         LaunchedEffect(
             subject = source,
             block = {
-                news.value = mainActivityViewModel.fetchNewsFrom(source)
+                news.value = viewModel.fetchNewsFrom(source)
             }
         )
         Spacer(
@@ -224,7 +237,7 @@ fun NewsRowForSource(
 }
 
 @Composable
-fun RenderNewsIdleState() {
+private fun RenderNewsIdleState() {
     ListItem {
         Box(
             modifier = Modifier
@@ -235,7 +248,7 @@ fun RenderNewsIdleState() {
 }
 
 @Composable
-fun RenderLoadingState(
+private fun RenderLoadingState(
     source: Source
 ) {
     val isDualScreenMode = ScreenHelper.isDualMode(AmbientContext.current)
@@ -274,7 +287,7 @@ fun RenderLoadingState(
 
 @ExperimentalAnimationApi
 @Composable
-fun RenderArticlesState(
+private fun RenderArticlesState(
     articlesUIModel: ArticlesUIModel,
     onNewsClicked: (String) -> Unit
 ) {
@@ -299,7 +312,7 @@ fun RenderArticlesState(
 
 @ExperimentalAnimationApi
 @Composable
-fun RenderEachArticle(
+private fun RenderEachArticle(
     article: ArticleUIModel,
     onNewsClicked: (String) -> Unit
 ) {
@@ -364,7 +377,7 @@ fun RenderEachArticle(
 }
 
 @Composable
-fun RenderErrorState(
+private fun RenderErrorState(
     errorUIModel: ErrorUIModel
 ) {
     val isDualScreenMode = ScreenHelper.isDualMode(AmbientContext.current)

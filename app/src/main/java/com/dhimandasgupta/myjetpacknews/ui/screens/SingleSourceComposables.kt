@@ -62,30 +62,36 @@ import com.dhimandasgupta.data.presentaion.initialNewsUiState
 import com.dhimandasgupta.myjetpacknews.R
 import com.dhimandasgupta.myjetpacknews.ui.common.MyNewsTheme
 import com.dhimandasgupta.myjetpacknews.ui.common.shapes
-import com.dhimandasgupta.myjetpacknews.viewmodel.MainActivityViewModel
+import com.dhimandasgupta.myjetpacknews.viewmodel.SingleSourceViewModel
 import com.microsoft.device.dualscreen.core.ScreenHelper
 import dev.chrisbanes.accompanist.coil.CoilImage
+import dev.chrisbanes.accompanist.insets.AmbientWindowInsets
+import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
+import dev.chrisbanes.accompanist.insets.navigationBarsHeight
+import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
 @ExperimentalAnimationApi
 @Composable
 fun SingleSourceScreen(
-    viewModel: MainActivityViewModel,
+    viewModel: SingleSourceViewModel,
     onUpClicked: () -> Unit,
     onNewsClicked: (String) -> Unit
 ) {
     MyNewsTheme {
-        ThemedSingleSourceScreen(
-            viewModel = viewModel,
-            onUpClicked = onUpClicked,
-            onNewsClicked = onNewsClicked
-        )
+        ProvideWindowInsets {
+            ThemedSingleSourceScreen(
+                viewModel = viewModel,
+                onUpClicked = onUpClicked,
+                onNewsClicked = onNewsClicked
+            )
+        }
     }
 }
 
 @ExperimentalAnimationApi
 @Composable
-fun ThemedSingleSourceScreen(
-    viewModel: MainActivityViewModel,
+private fun ThemedSingleSourceScreen(
+    viewModel: SingleSourceViewModel,
     onUpClicked: () -> Unit,
     onNewsClicked: (String) -> Unit
 ) {
@@ -124,49 +130,58 @@ fun ThemedSingleSourceScreen(
 }
 
 @Composable
-fun NewsTopAppBar(
+private fun NewsTopAppBar(
     source: Source,
     onUpClicked: () -> Unit
 ) {
     val isDualScreenMode = ScreenHelper.isDualMode(AmbientContext.current)
 
-    TopAppBar {
-        IconButton(
-            onClick = { onUpClicked.invoke() },
+    Column {
+        Spacer(
             modifier = Modifier
-                .wrapContentSize(align = Center)
-                .align(CenterVertically),
-        ) {
-            Icon(
-                imageVector = vectorResource(R.drawable.ic_arrow_back),
-                tint = colors.onPrimary,
-                modifier = Modifier.preferredSize(48.dp)
+                .background(colors.primary)
+                .statusBarsHeight() // Match the height of the status bar
+                .fillMaxWidth()
+        )
+
+        TopAppBar {
+            IconButton(
+                onClick = { onUpClicked.invoke() },
+                modifier = Modifier
+                    .wrapContentSize(align = Center)
+                    .align(CenterVertically),
+            ) {
+                Icon(
+                    imageVector = vectorResource(R.drawable.ic_arrow_back),
+                    tint = colors.onPrimary,
+                    modifier = Modifier.preferredSize(48.dp)
+                )
+            }
+
+            Text(
+                text = stringResource(
+                    id = R.string.news_from,
+                    formatArgs = arrayOf(source.title)
+                ),
+                style = typography.h5,
+                color = colors.onPrimary,
+                textAlign = if (isDualScreenMode) TextAlign.Start else TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(CenterVertically)
+                    .padding(8.dp),
             )
         }
-
-        Text(
-            text = stringResource(
-                id = R.string.news_from,
-                formatArgs = arrayOf(source.title)
-            ),
-            style = typography.h5,
-            color = colors.onPrimary,
-            textAlign = if (isDualScreenMode) TextAlign.Start else TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(CenterVertically)
-                .padding(8.dp),
-        )
     }
 }
 
 @ExperimentalAnimationApi
 @Composable
-fun NewsBody(
+private fun NewsBody(
     uiModels: UIModels,
     sources: List<Source>,
     onNewsClicked: (String) -> Unit,
-    onSourceSelected: (Source) -> Unit
+    onSourceSelected: (Source) -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -187,9 +202,12 @@ fun NewsBody(
         ) {
             if (isLandscape) {
                 LazyColumn(
-                    modifier = Modifier.weight(
-                        leftSourcesWeight, true
-                    ).fillMaxHeight().padding(start = 8.dp)
+                    modifier = Modifier
+                        .weight(
+                            leftSourcesWeight, true
+                        )
+                        .fillMaxHeight()
+                        .padding(start = 8.dp)
                 ) {
                     items(
                         items = sources,
@@ -215,7 +233,7 @@ fun NewsBody(
 
 @ExperimentalAnimationApi
 @Composable
-fun NewsContainer(
+private fun NewsContainer(
     uiModels: UIModels,
     onNewsClicked: (String) -> Unit
 ) {
@@ -238,7 +256,7 @@ fun NewsContainer(
 }
 
 @Composable
-fun RenderIdle() {
+private fun RenderIdle() {
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -260,7 +278,7 @@ fun RenderIdle() {
 }
 
 @Composable
-fun RenderLoading(
+private fun RenderLoading(
     source: Source
 ) {
     Box(
@@ -297,7 +315,7 @@ fun RenderLoading(
 
 @ExperimentalAnimationApi
 @Composable
-fun RenderArticles(
+private fun RenderArticles(
     articles: List<ArticleUIModel>,
     onNewsClicked: (String) -> Unit
 ) {
@@ -319,7 +337,7 @@ fun RenderArticles(
 
 @ExperimentalAnimationApi
 @Composable
-fun RenderArticle(
+private fun RenderArticle(
     article: ArticleUIModel,
     onNewsClicked: (String) -> Unit
 ) {
@@ -405,7 +423,7 @@ fun RenderArticle(
 }
 
 @Composable
-fun RenderError(
+private fun RenderError(
     errorUIModel: ErrorUIModel
 ) {
     Box(
@@ -460,24 +478,38 @@ fun RenderError(
 
 @ExperimentalAnimationApi
 @Composable
-fun NewsBottomAppBar(sources: List<Source>, onSourceSelected: (Source) -> Unit) {
+private fun NewsBottomAppBar(
+    sources: List<Source>,
+    onSourceSelected: (Source) -> Unit
+) {
     if (AmbientConfiguration.current.orientation == ORIENTATION_PORTRAIT) {
+        val insets = AmbientWindowInsets.current
+
         BottomAppBar(
             modifier = Modifier
                 .wrapContentHeight(align = CenterVertically)
         ) {
-            LazyRow(
-                modifier = Modifier
-                    .fillMaxHeight()
-            ) {
-                items(
-                    items = sources,
-                    itemContent = {
-                        BottomAppBarItem(
-                            source = it,
-                            onSourceSelected = onSourceSelected
-                        )
-                    }
+            Column {
+                LazyRow(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                ) {
+                    items(
+                        items = sources,
+                        itemContent = {
+                            BottomAppBarItem(
+                                source = it,
+                                onSourceSelected = onSourceSelected
+                            )
+                        }
+                    )
+                }
+                Spacer(
+                    modifier = Modifier
+                        .padding(bottom = insets.navigationBars.bottom.dp)
+                        .background(colors.primary.copy(alpha = 0.7f))
+                        .navigationBarsHeight() // Match the height of the navigation bar
+                        .fillMaxWidth()
                 )
             }
         }
@@ -486,7 +518,7 @@ fun NewsBottomAppBar(sources: List<Source>, onSourceSelected: (Source) -> Unit) 
 
 @ExperimentalAnimationApi
 @Composable
-fun BottomAppBarItem(
+private fun BottomAppBarItem(
     source: Source,
     onSourceSelected: (Source) -> Unit
 ) {

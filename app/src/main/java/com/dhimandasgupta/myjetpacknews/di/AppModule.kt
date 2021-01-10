@@ -6,6 +6,9 @@ import com.dhimandasgupta.data.data.api.NewsApi
 import com.dhimandasgupta.data.data.api.NewsRequestHeaderInterceptor
 import com.dhimandasgupta.data.domain.NewsUseCase
 import com.dhimandasgupta.data.domain.NewsUseCaseImpl
+import com.dhimandasgupta.myjetpacknews.viewmodel.MultiSourceViewModelFactory
+import com.dhimandasgupta.myjetpacknews.viewmodel.SingleSourceStoryViewModelFactory
+import com.dhimandasgupta.myjetpacknews.viewmodel.SingleSourceViewModelFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -77,4 +80,16 @@ class ActivityModule {
     @Provides
     @ActivityRetainedScoped
     fun provideNewsUseCase(newsRepository: NewsRepositoryImpl): NewsUseCase = NewsUseCaseImpl(newsRepository)
+
+    @Provides
+    @ActivityRetainedScoped
+    fun provideSingleSourceViewModelFactory(newsUseCase: NewsUseCase): SingleSourceViewModelFactory = SingleSourceViewModelFactory(useCase = newsUseCase)
+
+    @Provides
+    @ActivityRetainedScoped
+    fun provideMultiSourceViewModelFactory(newsUseCase: NewsUseCase): MultiSourceViewModelFactory = MultiSourceViewModelFactory(useCase = newsUseCase)
+
+    @Provides
+    @ActivityRetainedScoped
+    fun provideMultiSourceStoryViewModelFactory(newsUseCase: NewsUseCase): SingleSourceStoryViewModelFactory = SingleSourceStoryViewModelFactory(useCase = newsUseCase)
 }

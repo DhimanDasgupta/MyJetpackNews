@@ -7,7 +7,7 @@ object App {
 }
 
 object Versions {
-    const val minSdk = 21
+    const val minSdk = 22
     const val targetSdk = 30
     const val compileSdk = 30
     const val buildTool = "30.0.2"
@@ -112,6 +112,7 @@ object Deps {
 
             const val accompanistCoil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
             const val accompanistMdc = "dev.chrisbanes.accompanist:accompanist-mdc-theme:$version"
+            const val accompanistWindowInset = "dev.chrisbanes.accompanist:accompanist-insets:$version"
         }
 
         object Lifecycle {

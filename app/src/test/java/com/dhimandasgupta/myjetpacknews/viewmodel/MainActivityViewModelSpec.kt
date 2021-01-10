@@ -21,7 +21,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class MainActivityViewModelSpec {
+class SingleSourceViewModelSpec {
     @get:Rule
     val instantTestExecutorRule = InstantTaskExecutorRule()
 
@@ -30,12 +30,12 @@ class MainActivityViewModelSpec {
 
     private val fakeNewsUseCase: NewsUseCase = FakeNewsUseCase()
 
-    private lateinit var singleSourceViewModel: MainActivityViewModel
+    private lateinit var singleSourceViewModel: SingleSourceStoryViewModel
 
     @Before
     fun init() {
         Dispatchers.setMain(mainCoroutineRule.testDispatcher)
-        singleSourceViewModel = MainActivityViewModel(fakeNewsUseCase)
+        singleSourceViewModel = SingleSourceStoryViewModel(fakeNewsUseCase)
     }
 
     @After
@@ -47,7 +47,7 @@ class MainActivityViewModelSpec {
     @Test
     fun `live data should have value with SuccessUI Model when the call is successful`() {
         mainCoroutineRule.runBlockingTest {
-            fakeNewsUseCase.getEverythingByQuery(Params(query = "google"))
+            fakeNewsUseCase.execute(Params(query = "google"))
             assertNotNull(singleSourceViewModel.newsUiState.value)
 
             // Testing Current Source from the Ui state
