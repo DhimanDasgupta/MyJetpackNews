@@ -12,9 +12,12 @@ import com.dhimandasgupta.data.presentaion.SuccessUIModel
 import com.dhimandasgupta.data.presentaion.UIModels
 import com.dhimandasgupta.data.presentaion.sources
 import com.dhimandasgupta.data.presentaion.toUIModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import java.lang.Exception
+import javax.inject.Inject
 
-class MultiSourceViewModel(
+@HiltViewModel
+class MultiSourceViewModel @Inject constructor(
     private val useCase: NewsUseCase
 ) : ViewModel() {
     // Variable used for Multi Source Composable
@@ -37,7 +40,7 @@ class MultiSourceViewModel(
 }
 
 @Suppress("UNCHECKED_CAST")
-class MultiSourceViewModelFactory(
+class MultiSourceViewModelFactory @Inject constructor(
     private val useCase: NewsUseCase
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {

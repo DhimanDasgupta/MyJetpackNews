@@ -85,7 +85,6 @@ dependencies {
     implementation Deps.Hilt.hiltAndroid
     kapt Deps.Hilt.kapt
     implementation Deps.HiltAndroid.viewModel
-    kapt Deps.HiltAndroid.kapt
 
     // Time
     implementation Deps.ThreeTenAndroid.threeTenABP

@@ -14,12 +14,15 @@ import com.dhimandasgupta.data.presentaion.Source
 import com.dhimandasgupta.data.presentaion.initialNewsUiState
 import com.dhimandasgupta.data.presentaion.mapSource
 import com.dhimandasgupta.data.presentaion.toUIModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.lang.Exception
+import javax.inject.Inject
 
-class SingleSourceViewModel(
+@HiltViewModel
+class SingleSourceViewModel @Inject constructor(
     private val useCase: NewsUseCase
 ) : ViewModel() {
     // Variables used for Single Source Composable
@@ -73,7 +76,7 @@ class SingleSourceViewModel(
 }
 
 @Suppress("UNCHECKED_CAST")
-class SingleSourceViewModelFactory(
+class SingleSourceViewModelFactory @Inject constructor(
     private val useCase: NewsUseCase
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {

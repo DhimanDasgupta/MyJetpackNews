@@ -57,23 +57,22 @@ object Deps {
     }
 
     object Hilt {
-        const val version = "2.29-alpha"
+        const val version = "2.31.2-alpha"
 
-        const val kapt = "com.google.dagger:hilt-android-compiler:$version"
+        const val kapt = "com.google.dagger:hilt-compiler:$version"
         const val hiltAndroid = "com.google.dagger:hilt-android:$version"
+    }
+
+    object HiltAndroid {
+        private const val version = "1.0.0-alpha02"
+
+        const val viewModel = "androidx.hilt:hilt-lifecycle-viewmodel:$version"
     }
 
     object ThreeTenAndroid {
         private const val version = "1.3.0"
 
         const val threeTenABP = "com.jakewharton.threetenabp:threetenabp:$version"
-    }
-
-    object HiltAndroid {
-        private const val version = "1.0.0-alpha02"
-
-        const val kapt = "androidx.hilt:hilt-compiler:$version"
-        const val viewModel = "androidx.hilt:hilt-lifecycle-viewmodel:$version"
     }
 
     object AndroidX {
