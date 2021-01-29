@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.AmbientIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -130,7 +129,8 @@ private fun NewsTopAppBarForMultiSource(
                     imageVector = vectorResource(R.drawable.ic_arrow_back),
                     tint = colors.onPrimary,
                     modifier = Modifier
-                        .preferredSize(48.dp)
+                        .preferredSize(48.dp),
+                    contentDescription = "Back"
                 )
             }
             Text(
@@ -169,11 +169,11 @@ private fun NewsBodyForMultiSource(
                 .wrapContentHeight(align = Alignment.CenterVertically)
         ) {
             items(
-                items = newsUiState.value,
-                itemContent = {
+                count = newsUiState.value.size,
+                itemContent = { index ->
                     NewsRowForSource(
                         viewModel = viewModel,
-                        source = it,
+                        source = newsUiState.value[index],
                         onNewsClicked = onNewsClicked
                     )
                 }
@@ -195,7 +195,7 @@ private fun NewsRowForSource(
         val news: MutableState<UIModels> = remember { mutableStateOf(LoadingUIModel(source)) }
 
         LaunchedEffect(
-            subject = source,
+            key1 = source,
             block = {
                 news.value = viewModel.fetchNewsFrom(source)
             }
@@ -298,10 +298,10 @@ private fun RenderArticlesState(
                 .wrapContentHeight()
         ) {
             items(
-                items = articlesUIModel.articles,
-                itemContent = {
+                count = articlesUIModel.articles.size,
+                itemContent = { index ->
                     RenderEachArticle(
-                        article = it,
+                        article = articlesUIModel.articles[index],
                         onNewsClicked = onNewsClicked
                     )
                 }
@@ -337,7 +337,6 @@ private fun RenderEachArticle(
                     .size(cardSize)
                     .clickable(
                         enabled = true,
-                        indication = AmbientIndication.current(),
                         onClick = {
                             onNewsClicked.invoke(article.url)
                         }
@@ -352,6 +351,7 @@ private fun RenderEachArticle(
                         modifier = Modifier.size(cardSize),
                         contentScale = ContentScale.Crop,
                         fadeIn = true,
+                        contentDescription = article.description
                     )
                     Box(
                         modifier = Modifier

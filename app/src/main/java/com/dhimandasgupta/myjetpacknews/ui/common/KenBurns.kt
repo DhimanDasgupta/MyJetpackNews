@@ -25,13 +25,14 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 // Unfinished, work to be done on this
+// ToDo replace depricated apis
 @Composable
 fun KenBurns(
     data: Any,
     modifier: Modifier
 ) {
-    var start = remember { mutableStateOf(KenBurnsState.Start) }
-    var end = remember { mutableStateOf(KenBurnsState.End) }
+    val start = remember { mutableStateOf(KenBurnsState.Start) }
+    val end = remember { mutableStateOf(KenBurnsState.End) }
 
     val transitionState = transition(
         definition = definition,
@@ -64,6 +65,7 @@ fun KenBurns(
                     translationY = transitionState[translationYProp],
                 )
         ),
+        contentDescription = "",
         contentScale = ContentScale.None,
         fadeIn = true,
         onRequestCompleted = { imageLoadState ->

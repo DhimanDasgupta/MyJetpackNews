@@ -15,17 +15,17 @@ object Versions {
 }
 
 object Deps {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha04"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha05"
     const val kotlinGradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Kotlin.version}"
     const val hiltGradlePlugin = "com.google.dagger:hilt-android-gradle-plugin:${Hilt.version}"
 
     object Kotlin {
-        const val version = "1.4.21"
+        const val version = "1.4.21-2"
         const val stdLib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
         const val common = "org.jetbrains.kotlin:kotlin-stdlib-common:$version"
 
-        const val compilerVersion = "1.4.21"
+        const val compilerVersion = "1.4.21-2"
 
         object Coroutine {
             private const val version = "1.4.2"
@@ -87,7 +87,7 @@ object Deps {
         const val viewModelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:$viewModelKtxVersion"
 
         object Compose {
-            private const val version = "1.0.0-alpha10"
+            private const val version = "1.0.0-alpha11"
 
             const val ui = "androidx.compose.ui:ui:$version"
             const val runtime = "androidx.compose.runtime:runtime:$version"
@@ -107,7 +107,7 @@ object Deps {
         }
 
         object Accompanist {
-            private const val version = "0.4.1"
+            private const val version = "0.5.0"
 
             const val accompanistCoil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
             const val accompanistMdc = "dev.chrisbanes.accompanist:accompanist-mdc-theme:$version"

@@ -1,7 +1,6 @@
 package com.dhimandasgupta.myjetpacknews.ui.screens
 
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
-import androidx.compose.foundation.AmbientIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -12,14 +11,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.onActive
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -39,6 +39,7 @@ import com.microsoft.device.dualscreen.core.ScreenHelper
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import dev.chrisbanes.accompanist.insets.navigationBarsHeight
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -167,7 +168,6 @@ private fun RenderContent(page: Page, modifier: Modifier, onClick: () -> Unit) {
             .padding(8.dp)
             .clickable(
                 enabled = true,
-                indication = AmbientIndication.current(),
                 onClick = { onClick.invoke() }
             ),
         contentAlignment = Alignment.Center,
@@ -190,14 +190,17 @@ private fun RenderBottomBar() {
     val formatter = remember { DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss a z") }
     val state = remember { mutableStateOf(ZonedDateTime.now().format(formatter)) }
 
-    onActive(
-        callback = {
+    DisposableEffect(
+        key1 = "clock",
+        effect = {
             scope.launch {
                 while (isActive) {
                     delay(1000)
                     state.value = ZonedDateTime.now().format(formatter)
                 }
             }
+
+            onDispose { scope.cancel(null) }
         }
     )
 

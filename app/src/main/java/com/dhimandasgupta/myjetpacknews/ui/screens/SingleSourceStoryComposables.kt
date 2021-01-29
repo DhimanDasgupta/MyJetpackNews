@@ -18,10 +18,10 @@ import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.onActive
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -46,6 +46,7 @@ import com.dhimandasgupta.myjetpacknews.viewmodel.SingleSourceStoryViewModel
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 import dev.chrisbanes.accompanist.insets.statusBarsPadding
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -119,14 +120,17 @@ private fun RenderSuccess(
     val scope = rememberCoroutineScope()
     val state = remember { mutableStateOf(0) }
 
-    onActive(
-        callback = {
+    DisposableEffect(
+        key1 = articlesUIModel,
+        effect = {
             scope.launch {
                 while (isActive) {
                     delay(5000)
                     state.value = if (state.value >= articlesUIModel.articles.size - 1) 0 else ++state.value
                 }
             }
+
+            onDispose { scope.cancel(null) }
         }
     )
 
@@ -143,7 +147,10 @@ private fun RenderSuccess(
                 .align(alignment = Alignment.TopCenter)
                 .background(
                     color = colors.surface.copy(alpha = 0.6f),
-                    shape = shapes.medium.copy(topLeft = CornerSize(0.dp), topRight = CornerSize(0.dp)),
+                    shape = shapes.medium.copy(
+                        topLeft = CornerSize(0.dp),
+                        topRight = CornerSize(0.dp)
+                    ),
                 )
                 .fillMaxWidth()
                 .statusBarsPadding()
@@ -156,7 +163,10 @@ private fun RenderSuccess(
                 .fillMaxWidth()
                 .background(
                     color = colors.surface.copy(alpha = 0.6f),
-                    shape = shapes.medium.copy(topLeft = CornerSize(0.dp), topRight = CornerSize(0.dp)),
+                    shape = shapes.medium.copy(
+                        topLeft = CornerSize(0.dp),
+                        topRight = CornerSize(0.dp)
+                    ),
                 )
                 .padding(8.dp)
         ) {

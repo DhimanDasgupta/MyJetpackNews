@@ -7,7 +7,6 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.AmbientIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -154,7 +153,8 @@ private fun NewsTopAppBar(
                 Icon(
                     imageVector = vectorResource(R.drawable.ic_arrow_back),
                     tint = colors.onPrimary,
-                    modifier = Modifier.preferredSize(48.dp)
+                    modifier = Modifier.preferredSize(48.dp),
+                    contentDescription = "Back"
                 )
             }
 
@@ -210,10 +210,10 @@ private fun NewsBody(
                         .padding(start = 8.dp)
                 ) {
                     items(
-                        items = sources,
-                        itemContent = {
+                        count = sources.size,
+                        itemContent = { index ->
                             BottomAppBarItem(
-                                source = it,
+                                source = sources[index],
                                 onSourceSelected = onSourceSelected
                             )
                         }
@@ -324,10 +324,10 @@ private fun RenderArticles(
             .fillMaxSize(1f)
     ) {
         items(
-            items = articles,
-            itemContent = {
+            count = articles.size,
+            itemContent = { index ->
                 RenderArticle(
-                    article = it,
+                    article = articles[index],
                     onNewsClicked = onNewsClicked
                 )
             }
@@ -360,7 +360,6 @@ private fun RenderArticle(
                     .fillMaxWidth()
                     .clickable(
                         enabled = true,
-                        indication = AmbientIndication.current(),
                         onClick = { onNewsClicked.invoke(article.url) }
                     )
             ) {
@@ -383,6 +382,7 @@ private fun RenderArticle(
                             modifier = Modifier
                                 .preferredSize(100.dp),
                             fadeIn = true,
+                            contentDescription = article.description
                         )
                         Column(
                             modifier = Modifier
@@ -495,10 +495,10 @@ private fun NewsBottomAppBar(
                         .fillMaxHeight()
                 ) {
                     items(
-                        items = sources,
-                        itemContent = {
+                        count = sources.size,
+                        itemContent = { index ->
                             BottomAppBarItem(
-                                source = it,
+                                source = sources[index],
                                 onSourceSelected = onSourceSelected
                             )
                         }
@@ -538,7 +538,6 @@ private fun BottomAppBarItem(
                 .fillMaxSize()
                 .clickable(
                     enabled = true,
-                    indication = AmbientIndication.current(),
                     onClick = { onSourceSelected.invoke(source) }
                 )
         ) {
