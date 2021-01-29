@@ -25,7 +25,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 // Unfinished, work to be done on this
-// ToDo replace depricated apis
+// ToDo replace deprecated apis
 @Composable
 fun KenBurns(
     data: Any,
