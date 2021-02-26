@@ -10,22 +10,22 @@ object Versions {
     const val minSdk = 22
     const val targetSdk = 30
     const val compileSdk = 30
-    const val buildTool = "30.0.2"
+    const val buildTool = "30.0.3"
     const val kotlin = Deps.Kotlin.version
 }
 
 object Deps {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha05"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha08"
     const val kotlinGradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Kotlin.version}"
     const val hiltGradlePlugin = "com.google.dagger:hilt-android-gradle-plugin:${Hilt.version}"
 
     object Kotlin {
-        const val version = "1.4.21-2"
+        const val version = "1.4.30"
         const val stdLib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
         const val common = "org.jetbrains.kotlin:kotlin-stdlib-common:$version"
 
-        const val compilerVersion = "1.4.21-2"
+        // const val compilerVersion = "1.4.30"
 
         object Coroutine {
             private const val version = "1.4.2"
@@ -77,37 +77,37 @@ object Deps {
 
     object AndroidX {
         private const val androidXCoreVersion = "1.3.2"
-        private const val androidXVersion = "1.1.0"
-        private const val viewModelKtxVersion = "2.2.0"
+        private const val materialVersion = "1.3.0"
+        private const val androidAppCompatVersion = "1.2.0"
+        private const val activityComposeVersion = "1.3.0-alpha02"
 
         const val coreKtx = "androidx.core:core-ktx:$androidXCoreVersion"
-        const val appcompat = "androidx.appcompat:appcompat:$androidXVersion"
-        const val activityKtx = "androidx.activity:activity-ktx:$androidXVersion"
-        const val material = "com.google.android.material:material:$androidXVersion"
-        const val viewModelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:$viewModelKtxVersion"
+        const val appcompat = "androidx.appcompat:appcompat:$androidAppCompatVersion"
+        const val material = "com.google.android.material:material:$materialVersion"
+        const val activityCompose = "androidx.activity:activity-compose:$activityComposeVersion"
 
         object Compose {
-            private const val version = "1.0.0-alpha11"
+            private const val version = "1.0.0-beta01"
 
             const val ui = "androidx.compose.ui:ui:$version"
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val foundation = "androidx.compose.foundation:foundation-layout:$version"
             const val material = "androidx.compose.material:material:$version"
+            const val tooling = "androidx.compose.ui:ui-tooling:$version"
             const val animationCore = "androidx.compose.animation:animation-core:$version"
             const val animation = "androidx.compose.animation:animation:$version"
-            const val composer = "androidx.compose:compose-compiler:$version"
-            const val savedInstanceState = "androidx.compose.runtime:runtime-saved-instance-state:$version"
-            const val liveData = "androidx.compose.runtime:runtime-livedata:$version"
+            const val liveDataRuntime = "androidx.compose.runtime:runtime-livedata:$version"
+            const val composeViewModel = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha02"
 
             object Navigation {
-                private const val version = "1.0.0-alpha05"
+                private const val version = "1.0.0-alpha08"
 
                 const val navigation = "androidx.navigation:navigation-compose:$version"
             }
         }
 
         object Accompanist {
-            private const val version = "0.5.0"
+            private const val version = "0.6.0"
 
             const val accompanistCoil = "dev.chrisbanes.accompanist:accompanist-coil:$version"
             const val accompanistMdc = "dev.chrisbanes.accompanist:accompanist-mdc-theme:$version"
@@ -115,10 +115,10 @@ object Deps {
         }
 
         object Lifecycle {
-            private const val version = "2.3.0-beta01"
+            private const val version = "2.3.0"
 
-            const val runtimeKtx = "androidx.lifecycle:lifecycle-runtime-ktx:$version"
-            const val viewModelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
+            const val liveDataKtx = "androidx.lifecycle:lifecycle-livedata-ktx:$version"
+            const val runtime = "androidx.lifecycle:lifecycle-runtime-ktx:$version"
         }
 
         const val AndroidXCoreTesting = "androidx.arch.core:core-testing:2.1.0"

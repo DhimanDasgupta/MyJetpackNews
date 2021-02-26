@@ -1,3 +1,5 @@
+@file:Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+
 package com.dhimandasgupta.myjetpacknews.ui.screens
 
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
@@ -18,8 +20,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
@@ -43,10 +44,10 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Alignment.Companion.TopStart
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.AmbientConfiguration
-import androidx.compose.ui.platform.AmbientContext
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -64,9 +65,10 @@ import com.dhimandasgupta.myjetpacknews.ui.common.shapes
 import com.dhimandasgupta.myjetpacknews.viewmodel.SingleSourceViewModel
 import com.microsoft.device.dualscreen.core.ScreenHelper
 import dev.chrisbanes.accompanist.coil.CoilImage
-import dev.chrisbanes.accompanist.insets.AmbientWindowInsets
+import dev.chrisbanes.accompanist.insets.LocalWindowInsets
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import dev.chrisbanes.accompanist.insets.navigationBarsHeight
+import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
 @ExperimentalAnimationApi
@@ -105,7 +107,7 @@ private fun ThemedSingleSourceScreen(
                 onUpClicked = onUpClicked
             )
         },
-        bodyContent = {
+        content = {
             NewsBody(
                 uiModels = newsUiState.value.uiModels,
                 sources = newsUiState.value.allSources,
@@ -133,7 +135,7 @@ private fun NewsTopAppBar(
     source: Source,
     onUpClicked: () -> Unit
 ) {
-    val isDualScreenMode = ScreenHelper.isDualMode(AmbientContext.current)
+    val isDualScreenMode = ScreenHelper.isDualMode(LocalContext.current)
 
     Column {
         Spacer(
@@ -151,9 +153,9 @@ private fun NewsTopAppBar(
                     .align(CenterVertically),
             ) {
                 Icon(
-                    imageVector = vectorResource(R.drawable.ic_arrow_back),
+                    painter = painterResource(R.drawable.ic_arrow_back),
                     tint = colors.onPrimary,
-                    modifier = Modifier.preferredSize(48.dp),
+                    modifier = Modifier.size(24.dp),
                     contentDescription = "Back"
                 )
             }
@@ -186,11 +188,12 @@ private fun NewsBody(
     Box(
         modifier = Modifier
             .fillMaxSize(1f)
-            .background(color = colors.surface),
+            .background(color = colors.surface)
+            .navigationBarsPadding(),
         contentAlignment = TopStart
     ) {
-        val isLandscape = AmbientConfiguration.current.orientation == ORIENTATION_LANDSCAPE
-        val isDualScreenMode = ScreenHelper.isDualMode(AmbientContext.current)
+        val isLandscape = LocalConfiguration.current.orientation == ORIENTATION_LANDSCAPE
+        val isDualScreenMode = ScreenHelper.isDualMode(LocalContext.current)
         val leftSourcesWeight = when {
             isLandscape && isDualScreenMode -> 0.5f
             isLandscape -> 0.3f
@@ -238,7 +241,7 @@ private fun NewsContainer(
     onNewsClicked: (String) -> Unit
 ) {
     Crossfade(
-        current = uiModels
+        targetState = uiModels
     ) {
         when (uiModels) {
             is IdleUIModel -> RenderIdle()
@@ -251,6 +254,7 @@ private fun NewsContainer(
             is ErrorUIModel -> RenderError(
                 errorUIModel = uiModels
             )
+            else -> {}
         }
     }
 }
@@ -289,8 +293,7 @@ private fun RenderLoading(
     ) {
         Column {
             CircularProgressIndicator(
-                modifier = Modifier
-                    .align(CenterHorizontally),
+                modifier = Modifier.align(CenterHorizontally),
                 color = colors.onSurface
             )
             Text(
@@ -320,8 +323,7 @@ private fun RenderArticles(
     onNewsClicked: (String) -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize(1f)
+        modifier = Modifier.fillMaxSize(1f)
     ) {
         items(
             count = articles.size,
@@ -368,51 +370,47 @@ private fun RenderArticle(
                         modifier = Modifier
                             .wrapContentWidth()
                             .wrapContentHeight()
-                            .preferredSize(8.dp)
+                            .size(8.dp)
                     )
                     Row {
                         Spacer(
                             modifier = Modifier
                                 .wrapContentWidth()
                                 .wrapContentHeight()
-                                .preferredSize(8.dp)
+                                .size(8.dp)
                         )
                         CoilImage(
                             data = article.imageUrl,
-                            modifier = Modifier
-                                .preferredSize(100.dp),
+                            modifier = Modifier.size(100.dp),
                             fadeIn = true,
                             contentDescription = article.description
                         )
                         Column(
-                            modifier = Modifier
-                                .padding(8.dp)
+                            modifier = Modifier.padding(8.dp)
                         ) {
                             Text(
                                 text = article.title,
                                 style = typography.h6,
                                 color = colors.onSurface,
-                                modifier = Modifier
-                                    .padding(bottom = 4.dp)
+                                modifier = Modifier.padding(bottom = 4.dp)
                             )
                             Spacer(
                                 modifier = Modifier
                                     .wrapContentWidth()
                                     .wrapContentHeight()
-                                    .preferredSize(4.dp)
+                                    .size(4.dp)
                             )
                             Text(
                                 text = article.description,
                                 style = typography.body1,
                                 color = colors.onSurface,
-                                modifier = Modifier
-                                    .padding(top = 4.dp)
+                                modifier = Modifier.padding(top = 4.dp)
                             )
                             Spacer(
                                 modifier = Modifier
                                     .wrapContentWidth()
                                     .wrapContentHeight()
-                                    .preferredSize(4.dp)
+                                    .size(4.dp)
                             )
                         }
                     }
@@ -444,8 +442,7 @@ private fun RenderError(
             )
 
             Spacer(
-                modifier = Modifier
-                    .preferredHeight(4.dp)
+                modifier = Modifier.size(4.dp)
             )
             Text(
                 text = errorUIModel.source.title,
@@ -457,8 +454,7 @@ private fun RenderError(
                     .align(alignment = CenterHorizontally)
             )
             Spacer(
-                modifier = Modifier
-                    .preferredHeight(8.dp)
+                modifier = Modifier.size(8.dp)
             )
             Text(
                 text = stringResource(
@@ -482,17 +478,17 @@ private fun NewsBottomAppBar(
     sources: List<Source>,
     onSourceSelected: (Source) -> Unit
 ) {
-    if (AmbientConfiguration.current.orientation == ORIENTATION_PORTRAIT) {
-        val insets = AmbientWindowInsets.current
+    if (LocalConfiguration.current.orientation == ORIENTATION_PORTRAIT) {
+        val insets = LocalWindowInsets.current
 
         BottomAppBar(
             modifier = Modifier
                 .wrapContentHeight(align = CenterVertically)
+                .navigationBarsPadding()
         ) {
             Column {
                 LazyRow(
-                    modifier = Modifier
-                        .fillMaxHeight()
+                    modifier = Modifier.fillMaxHeight()
                 ) {
                     items(
                         count = sources.size,
@@ -522,10 +518,10 @@ private fun BottomAppBarItem(
     source: Source,
     onSourceSelected: (Source) -> Unit
 ) {
-    val isLandscape = AmbientConfiguration.current.orientation == ORIENTATION_LANDSCAPE
+    val isLandscape = LocalConfiguration.current.orientation == ORIENTATION_LANDSCAPE
     val textColor = if (isLandscape) colors.onSurface else colors.onPrimary
 
-    val isDualScreenMode = ScreenHelper.isDualMode(AmbientContext.current)
+    val isDualScreenMode = ScreenHelper.isDualMode(LocalContext.current)
 
     AnimatedVisibility(
         initiallyVisible = false,

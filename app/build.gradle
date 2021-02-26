@@ -44,7 +44,7 @@ android {
     }
     composeOptions {
         kotlinCompilerExtensionVersion Deps.AndroidX.Compose.version
-        kotlinCompilerVersion Deps.Kotlin.compilerVersion
+        kotlinCompilerVersion Deps.AndroidX.Compose.version
     }
 }
 
@@ -52,42 +52,43 @@ dependencies {
     implementation project(path: ':data')
 
     implementation Deps.Kotlin.stdLib
+
     implementation Deps.AndroidX.coreKtx
     implementation Deps.AndroidX.appcompat
-    implementation Deps.AndroidX.activityKtx
     implementation Deps.AndroidX.material
-    implementation Deps.AndroidX.viewModelKtx
+    implementation Deps.AndroidX.activityCompose
 
     // Compose
     implementation Deps.AndroidX.Compose.ui
     implementation Deps.AndroidX.Compose.runtime
     implementation Deps.AndroidX.Compose.foundation
     implementation Deps.AndroidX.Compose.material
-    implementation Deps.AndroidX.Compose.savedInstanceState
-    implementation Deps.AndroidX.Compose.liveData
+    implementation Deps.AndroidX.Compose.tooling
     implementation Deps.AndroidX.Compose.animationCore
     implementation Deps.AndroidX.Compose.animation
+    implementation Deps.AndroidX.Compose.liveDataRuntime
+    implementation Deps.AndroidX.Compose.composeViewModel
     implementation Deps.AndroidX.Compose.Navigation.navigation
 
-    // Microsoft Duo
-    implementation Deps.MicrosoftDuo.duoCore
-    implementation Deps.MicrosoftDuo.duoLayout
-
-    // Coil image for Compose
-    implementation Deps.AndroidX.Accompanist.accompanistCoil
-    implementation Deps.AndroidX.Accompanist.accompanistWindowInset
-
-    // ViewModel
-    implementation Deps.AndroidX.Lifecycle.viewModelKtx
-    implementation Deps.AndroidX.Lifecycle.runtimeKtx
+    // LifeCycle
+    implementation Deps.AndroidX.Lifecycle.liveDataKtx
+    implementation Deps.AndroidX.Lifecycle.runtime
 
     // Hilt
     implementation Deps.Hilt.hiltAndroid
     kapt Deps.Hilt.kapt
     implementation Deps.HiltAndroid.viewModel
 
+    // Coil image for Compose
+    implementation Deps.AndroidX.Accompanist.accompanistCoil
+    implementation Deps.AndroidX.Accompanist.accompanistWindowInset
+
     // Time
     implementation Deps.ThreeTenAndroid.threeTenABP
+
+    // Microsoft Duo
+    implementation Deps.MicrosoftDuo.duoCore
+    implementation Deps.MicrosoftDuo.duoLayout
 
     // Testing dependencies
     testImplementation Deps.AndroidX.AndroidXCoreTesting
@@ -97,11 +98,4 @@ dependencies {
 
 kapt {
     correctErrorTypes true
-}
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-    kotlinOptions {
-        jvmTarget = "11"
-        freeCompilerArgs += ["-Xallow-jvm-ir-dependencies", "-Xskip-prerelease-check"]
-    }
 }

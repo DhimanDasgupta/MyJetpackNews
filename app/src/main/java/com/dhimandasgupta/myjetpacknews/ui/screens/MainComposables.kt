@@ -24,8 +24,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.AmbientConfiguration
-import androidx.compose.ui.platform.AmbientContext
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign.Center
 import androidx.compose.ui.text.style.TextAlign.Start
@@ -55,7 +55,7 @@ fun MainScreen(
         ProvideWindowInsets {
             Scaffold(
                 topBar = { MainTopAppBar() },
-                bodyContent = {
+                content = {
                     MainContent(
                         navigateToPage = navigateToPage,
                         pages = pages
@@ -69,7 +69,7 @@ fun MainScreen(
 
 @Composable
 private fun MainTopAppBar() {
-    val isDualScreenMode = ScreenHelper.isDualMode(AmbientContext.current)
+    val isDualScreenMode = ScreenHelper.isDualMode(LocalContext.current)
 
     Column {
         Spacer(
@@ -99,7 +99,7 @@ private fun MainContent(
     navigateToPage: (Page) -> Unit,
     pages: List<Page>
 ) {
-    when (AmbientConfiguration.current.orientation) {
+    when (LocalConfiguration.current.orientation) {
         ORIENTATION_LANDSCAPE -> RenderLandscapeContent(
             navigateToPage = navigateToPage,
             pages = pages,

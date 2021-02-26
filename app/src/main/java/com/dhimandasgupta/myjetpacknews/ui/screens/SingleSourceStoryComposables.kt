@@ -1,3 +1,5 @@
+@file:Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+
 package com.dhimandasgupta.myjetpacknews.ui.screens
 
 import androidx.compose.animation.Crossfade
@@ -8,8 +10,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.CircularProgressIndicator
@@ -39,10 +41,10 @@ import com.dhimandasgupta.data.presentaion.Source
 import com.dhimandasgupta.data.presentaion.SuccessUIModel
 import com.dhimandasgupta.data.presentaion.initialNewsUiState
 import com.dhimandasgupta.myjetpacknews.R
-import com.dhimandasgupta.myjetpacknews.ui.common.KenBurns
 import com.dhimandasgupta.myjetpacknews.ui.common.MyNewsTheme
 import com.dhimandasgupta.myjetpacknews.ui.common.shapes
 import com.dhimandasgupta.myjetpacknews.viewmodel.SingleSourceStoryViewModel
+import dev.chrisbanes.accompanist.coil.CoilImage
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 import dev.chrisbanes.accompanist.insets.statusBarsPadding
@@ -81,7 +83,7 @@ private fun ThemedSingleSourceStoryScreen(
         .observeAsState(initial = initialNewsUiState)
 
     Scaffold(
-        bodyContent = {
+        content = {
             Box(modifier = Modifier.fillMaxSize()) {
                 StoryBody(newsUiState = newsUiState)
             }
@@ -95,7 +97,7 @@ private fun StoryBody(
     newsUiState: State<NewsUiState>
 ) {
     Crossfade(
-        current = newsUiState.value
+        targetState = newsUiState.value
     ) {
         when (newsUiState.value.uiModels) {
             is IdleUIModel -> RenderIdle()
@@ -108,6 +110,7 @@ private fun StoryBody(
             is ErrorUIModel -> RenderError(
                 errorUIModel = (newsUiState.value.uiModels as ErrorUIModel)
             )
+            else -> {}
         }
     }
 }
@@ -136,9 +139,10 @@ private fun RenderSuccess(
 
     Box(modifier = Modifier.fillMaxSize()) {
         // Full Screen Image
-        KenBurns(
+        CoilImage(
             data = articlesUIModel.articles[state.value].imageUrl,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            contentDescription = articlesUIModel.articles[state.value].description
         )
 
         // TOp Semi transparent Status Bar
@@ -148,8 +152,8 @@ private fun RenderSuccess(
                 .background(
                     color = colors.surface.copy(alpha = 0.6f),
                     shape = shapes.medium.copy(
-                        topLeft = CornerSize(0.dp),
-                        topRight = CornerSize(0.dp)
+                        topStart = CornerSize(0.dp),
+                        topEnd = CornerSize(0.dp)
                     ),
                 )
                 .fillMaxWidth()
@@ -164,8 +168,8 @@ private fun RenderSuccess(
                 .background(
                     color = colors.surface.copy(alpha = 0.6f),
                     shape = shapes.medium.copy(
-                        topLeft = CornerSize(0.dp),
-                        topRight = CornerSize(0.dp)
+                        topStart = CornerSize(0.dp),
+                        topEnd = CornerSize(0.dp)
                     ),
                 )
                 .padding(8.dp)
@@ -196,8 +200,7 @@ private fun RenderSuccess(
 @Composable
 private fun RenderIdle() {
     Box(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         Column {
@@ -208,8 +211,7 @@ private fun RenderIdle() {
                 text = stringResource(id = R.string.idle_text),
                 style = MaterialTheme.typography.h6,
                 color = colors.onSurface,
-                modifier = Modifier
-                    .wrapContentWidth(Alignment.CenterHorizontally)
+                modifier = Modifier.wrapContentWidth(Alignment.CenterHorizontally)
             )
         }
     }
@@ -227,8 +229,7 @@ private fun RenderLoading(
     ) {
         Column {
             CircularProgressIndicator(
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally),
+                modifier = Modifier.align(Alignment.CenterHorizontally),
                 color = colors.onSurface
             )
             Text(
@@ -236,16 +237,14 @@ private fun RenderLoading(
                 style = MaterialTheme.typography.h6,
                 color = colors.onSurface,
                 textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
             )
             Text(
                 text = source.title,
                 style = MaterialTheme.typography.h3,
                 color = colors.onSurface,
                 textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
             )
         }
     }
@@ -273,8 +272,7 @@ private fun RenderError(
             )
 
             Spacer(
-                modifier = Modifier
-                    .preferredHeight(4.dp)
+                modifier = Modifier.height(4.dp)
             )
             Text(
                 text = errorUIModel.source.title,
@@ -286,8 +284,7 @@ private fun RenderError(
                     .align(alignment = Alignment.CenterHorizontally)
             )
             Spacer(
-                modifier = Modifier
-                    .preferredHeight(8.dp)
+                modifier = Modifier.height(8.dp)
             )
             Text(
                 text = stringResource(

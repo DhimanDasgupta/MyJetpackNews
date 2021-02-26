@@ -1,3 +1,5 @@
+@file:Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+
 package com.dhimandasgupta.myjetpacknews.ui.screens
 
 import androidx.compose.animation.AnimatedVisibility
@@ -14,8 +16,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -24,6 +24,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.LinearProgressIndicator
@@ -42,9 +43,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.AmbientContext
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.dhimandasgupta.data.presentaion.ArticleUIModel
@@ -62,8 +63,10 @@ import com.dhimandasgupta.myjetpacknews.viewmodel.MultiSourceViewModel
 import com.microsoft.device.dualscreen.core.ScreenHelper
 import dev.chrisbanes.accompanist.coil.CoilImage
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
+import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
+@ExperimentalMaterialApi
 @ExperimentalAnimationApi
 @Composable
 fun MultipleSourceScreen(
@@ -82,6 +85,7 @@ fun MultipleSourceScreen(
     }
 }
 
+@ExperimentalMaterialApi
 @ExperimentalAnimationApi
 @Composable
 private fun ThemedMultiSourceScreen(
@@ -95,7 +99,7 @@ private fun ThemedMultiSourceScreen(
                 onUpClicked = onUpClicked
             )
         },
-        bodyContent = {
+        content = {
             NewsBodyForMultiSource(
                 viewModel = viewModel,
                 onNewsClicked = onNewsClicked
@@ -108,7 +112,7 @@ private fun ThemedMultiSourceScreen(
 private fun NewsTopAppBarForMultiSource(
     onUpClicked: () -> Unit
 ) {
-    val isDualScreenMode = ScreenHelper.isDualMode(AmbientContext.current)
+    val isDualScreenMode = ScreenHelper.isDualMode(LocalContext.current)
 
     Column {
         Spacer(
@@ -126,10 +130,9 @@ private fun NewsTopAppBarForMultiSource(
                     .align(alignment = Alignment.CenterVertically),
             ) {
                 Icon(
-                    imageVector = vectorResource(R.drawable.ic_arrow_back),
+                    painter = painterResource(R.drawable.ic_arrow_back),
                     tint = colors.onPrimary,
-                    modifier = Modifier
-                        .preferredSize(48.dp),
+                    modifier = Modifier.size(24.dp),
                     contentDescription = "Back"
                 )
             }
@@ -147,6 +150,7 @@ private fun NewsTopAppBarForMultiSource(
     }
 }
 
+@ExperimentalMaterialApi
 @ExperimentalAnimationApi
 @Composable
 private fun NewsBodyForMultiSource(
@@ -160,7 +164,8 @@ private fun NewsBodyForMultiSource(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = colors.surface),
+            .background(color = colors.surface)
+            .navigationBarsPadding(),
         contentAlignment = Alignment.TopStart
     ) {
         LazyColumn(
@@ -182,6 +187,7 @@ private fun NewsBodyForMultiSource(
     }
 }
 
+@ExperimentalMaterialApi
 @ExperimentalAnimationApi
 @Composable
 private fun NewsRowForSource(
@@ -189,7 +195,7 @@ private fun NewsRowForSource(
     source: Source,
     onNewsClicked: (String) -> Unit
 ) {
-    val isDualScreenMode = ScreenHelper.isDualMode(AmbientContext.current)
+    val isDualScreenMode = ScreenHelper.isDualMode(LocalContext.current)
 
     Column {
         val news: MutableState<UIModels> = remember { mutableStateOf(LoadingUIModel(source)) }
@@ -232,10 +238,12 @@ private fun NewsRowForSource(
             is ErrorUIModel -> RenderErrorState(
                 errorUIModel = news.value as ErrorUIModel
             )
+            else -> {}
         }
     }
 }
 
+@ExperimentalMaterialApi
 @Composable
 private fun RenderNewsIdleState() {
     ListItem {
@@ -247,11 +255,12 @@ private fun RenderNewsIdleState() {
     }
 }
 
+@ExperimentalMaterialApi
 @Composable
 private fun RenderLoadingState(
     source: Source
 ) {
-    val isDualScreenMode = ScreenHelper.isDualMode(AmbientContext.current)
+    val isDualScreenMode = ScreenHelper.isDualMode(LocalContext.current)
 
     ListItem {
         Box(
@@ -262,7 +271,8 @@ private fun RenderLoadingState(
         ) {
             Column {
                 LinearProgressIndicator(
-                    modifier = Modifier.align(if (isDualScreenMode) Alignment.Start else Alignment.CenterHorizontally)
+                    modifier = Modifier
+                        .align(if (isDualScreenMode) Alignment.Start else Alignment.CenterHorizontally)
                         .padding(8.dp),
                     color = colors.onSurface
                 )
@@ -285,6 +295,7 @@ private fun RenderLoadingState(
     }
 }
 
+@ExperimentalMaterialApi
 @ExperimentalAnimationApi
 @Composable
 private fun RenderArticlesState(
@@ -359,7 +370,7 @@ private fun RenderEachArticle(
                             .width(cardSize)
                             .background(
                                 color = colors.surface.copy(alpha = 0.6f),
-                                shape = shapes.medium.copy(topLeft = CornerSize(0.dp), topRight = CornerSize(0.dp)),
+                                shape = shapes.medium.copy(topStart = CornerSize(0.dp), topEnd = CornerSize(0.dp)),
                             )
                     ) {
                         Text(
@@ -376,11 +387,12 @@ private fun RenderEachArticle(
     }
 }
 
+@ExperimentalMaterialApi
 @Composable
 private fun RenderErrorState(
     errorUIModel: ErrorUIModel
 ) {
-    val isDualScreenMode = ScreenHelper.isDualMode(AmbientContext.current)
+    val isDualScreenMode = ScreenHelper.isDualMode(LocalContext.current)
 
     ListItem {
         Box(
@@ -401,7 +413,7 @@ private fun RenderErrorState(
                         .align(alignment = Alignment.CenterHorizontally)
                 )
                 Spacer(
-                    modifier = Modifier.preferredHeight(4.dp)
+                    modifier = Modifier.height(4.dp)
                 )
                 Text(
                     text = errorUIModel.source.title,
@@ -413,7 +425,7 @@ private fun RenderErrorState(
                         .align(alignment = Alignment.CenterHorizontally)
                 )
                 Spacer(
-                    modifier = Modifier.preferredHeight(8.dp)
+                    modifier = Modifier.height(8.dp)
                 )
                 Text(
                     text = stringResource(

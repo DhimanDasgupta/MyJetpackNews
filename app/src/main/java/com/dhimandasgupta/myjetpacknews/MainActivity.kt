@@ -2,8 +2,9 @@ package com.dhimandasgupta.myjetpacknews
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.ui.platform.setContent
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.core.view.WindowCompat
 import com.dhimandasgupta.myjetpacknews.ui.screens.AppNavGraph
 import com.dhimandasgupta.myjetpacknews.viewmodel.MultiSourceViewModelFactory
@@ -21,6 +22,7 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var singleSourceStoryViewModelFactory: SingleSourceStoryViewModelFactory
 
+    @ExperimentalMaterialApi
     @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -2,9 +2,10 @@ package com.dhimandasgupta.myjetpacknews.ui.screens
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.AmbientContext
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,6 +22,7 @@ import com.dhimandasgupta.myjetpacknews.viewmodel.SingleSourceStoryViewModelFact
 import com.dhimandasgupta.myjetpacknews.viewmodel.SingleSourceViewModel
 import com.dhimandasgupta.myjetpacknews.viewmodel.SingleSourceViewModelFactory
 
+@ExperimentalMaterialApi
 @ExperimentalAnimationApi
 @Composable
 fun AppNavGraph(
@@ -28,12 +30,12 @@ fun AppNavGraph(
     multiSourceViewModelFactory: MultiSourceViewModelFactory,
     singleSourceStoryViewModelFactory: SingleSourceStoryViewModelFactory
 ) {
-    val context = AmbientContext.current
+    val context = LocalContext.current
 
     val navController = rememberNavController()
     val actions = remember(navController) { Actions(navController) }
 
-    Crossfade(current = navController.currentBackStackEntryAsState()) {
+    Crossfade(targetState = navController.currentBackStackEntryAsState()) {
         NavHost(navController = navController, startDestination = Destinations.HomeScreen) {
             // Home Composable
             composable(route = Destinations.HomeScreen) {
