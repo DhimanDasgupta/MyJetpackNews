@@ -11,7 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.dhimandasgupta.myjetpacknews.ext.openBrowser
+import com.dhimandasgupta.myjetpacknews.ext.openAppOrBrowser
 import com.dhimandasgupta.myjetpacknews.ui.data.Actions
 import com.dhimandasgupta.myjetpacknews.ui.data.Destinations
 import com.dhimandasgupta.myjetpacknews.ui.data.pages
@@ -54,7 +54,7 @@ fun AppNavGraph(
                 SingleSourceScreen(
                     viewModel = viewModelProvider.get(SingleSourceViewModel::class.java),
                     onUpClicked = actions.navigateBack,
-                    onNewsClicked = { url -> context.openBrowser(url = url) }
+                    onNewsClicked = { url -> context.openAppOrBrowser(url = url) }
                 )
             }
 
@@ -67,7 +67,7 @@ fun AppNavGraph(
                 MultipleSourceScreen(
                     viewModel = viewModelProvider.get(MultiSourceViewModel::class.java),
                     onUpClicked = actions.navigateBack,
-                    onNewsClicked = { url -> context.openBrowser(url = url) }
+                    onNewsClicked = { url -> context.openAppOrBrowser(url = url) }
                 )
             }
 
@@ -80,7 +80,7 @@ fun AppNavGraph(
                 SingleSourceStoryScreen(
                     viewModel = viewModelProvider.get(SingleSourceStoryViewModel::class.java),
                     onUpClicked = actions.navigateBack,
-                    onNewsClicked = { url -> context.openBrowser(url = url) }
+                    onNewsClicked = { url -> context.openAppOrBrowser(url = url) }
                 )
             }
         }
