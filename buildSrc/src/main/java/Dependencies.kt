@@ -57,14 +57,14 @@ object Deps {
     }
 
     object Hilt {
-        const val version = "2.31.2-alpha"
+        const val version = "2.33-beta"
 
         const val kapt = "com.google.dagger:hilt-compiler:$version"
         const val hiltAndroid = "com.google.dagger:hilt-android:$version"
     }
 
     object HiltAndroid {
-        private const val version = "1.0.0-alpha02"
+        private const val version = "1.0.0-alpha03"
 
         const val viewModel = "androidx.hilt:hilt-lifecycle-viewmodel:$version"
     }
