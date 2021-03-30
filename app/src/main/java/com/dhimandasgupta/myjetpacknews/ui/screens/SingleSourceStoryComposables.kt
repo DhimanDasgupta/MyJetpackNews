@@ -44,10 +44,10 @@ import com.dhimandasgupta.myjetpacknews.R
 import com.dhimandasgupta.myjetpacknews.ui.common.MyNewsTheme
 import com.dhimandasgupta.myjetpacknews.ui.common.shapes
 import com.dhimandasgupta.myjetpacknews.viewmodel.SingleSourceStoryViewModel
-import dev.chrisbanes.accompanist.coil.CoilImage
-import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
-import dev.chrisbanes.accompanist.insets.navigationBarsPadding
-import dev.chrisbanes.accompanist.insets.statusBarsPadding
+import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.statusBarsPadding
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -110,7 +110,8 @@ private fun StoryBody(
             is ErrorUIModel -> RenderError(
                 errorUIModel = (newsUiState.value.uiModels as ErrorUIModel)
             )
-            else -> {}
+            else -> {
+            }
         }
     }
 }
@@ -129,7 +130,8 @@ private fun RenderSuccess(
             scope.launch {
                 while (isActive) {
                     delay(5000)
-                    state.value = if (state.value >= articlesUIModel.articles.size - 1) 0 else ++state.value
+                    state.value =
+                        if (state.value >= articlesUIModel.articles.size - 1) 0 else ++state.value
                 }
             }
 

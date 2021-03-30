@@ -60,11 +60,11 @@ import com.dhimandasgupta.myjetpacknews.R
 import com.dhimandasgupta.myjetpacknews.ui.common.MyNewsTheme
 import com.dhimandasgupta.myjetpacknews.ui.common.shapes
 import com.dhimandasgupta.myjetpacknews.viewmodel.MultiSourceViewModel
+import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.statusBarsHeight
 import com.microsoft.device.dualscreen.core.ScreenHelper
-import dev.chrisbanes.accompanist.coil.CoilImage
-import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
-import dev.chrisbanes.accompanist.insets.navigationBarsPadding
-import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
 @ExperimentalMaterialApi
 @ExperimentalAnimationApi
@@ -238,7 +238,8 @@ private fun NewsRowForSource(
             is ErrorUIModel -> RenderErrorState(
                 errorUIModel = news.value as ErrorUIModel
             )
-            else -> {}
+            else -> {
+            }
         }
     }
 }
@@ -370,7 +371,10 @@ private fun RenderEachArticle(
                             .width(cardSize)
                             .background(
                                 color = colors.surface.copy(alpha = 0.6f),
-                                shape = shapes.medium.copy(topStart = CornerSize(0.dp), topEnd = CornerSize(0.dp)),
+                                shape = shapes.medium.copy(
+                                    topStart = CornerSize(0.dp),
+                                    topEnd = CornerSize(0.dp)
+                                ),
                             )
                     ) {
                         Text(
